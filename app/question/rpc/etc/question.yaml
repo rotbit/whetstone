@@ -1,0 +1,6 @@
+Name: question.rpc
+ListenOn: 0.0.0.0:9003
+
+# Qdrant（题库向量检索，生成代码后在 config 中扩展）:
+#   Endpoint: http://127.0.0.1:6333
+#   Collection: questions

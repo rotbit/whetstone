@@ -1,0 +1,16 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8888
+
+Auth:
+  AccessSecret: whetstone-dev-secret-change-me
+  AccessExpire: 604800
+
+# 生成代码后按需在 internal/config/config.go 扩展下列配置：
+# Mysql:
+#   DataSource: root:root@tcp(127.0.0.1:3306)/whetstone?charset=utf8mb4&parseTime=true&loc=Local
+# Redis:
+#   Host: 127.0.0.1:6379
+# UserRpc:
+#   Endpoints:
+#     - 127.0.0.1:9001

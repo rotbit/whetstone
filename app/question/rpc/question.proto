@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package question;
+option go_package = "./question";
+
+// 题库 + RAG 个性化出题
+service Question {
+  // 按岗位 + 简历/JD 标签混合检索选题（向量 + 标签过滤 + rerank）
+  rpc PickQuestions(PickQuestionsReq) returns (PickQuestionsResp);
+
+  // 基于候选人回答生成追问（项目深挖不走题库，LLM 现场生成）
+  rpc GenerateFollowup(GenerateFollowupReq) returns (GenerateFollowupResp);
+}
+
+message PickQuestionsReq {
+  string position       = 1;
+  repeated string tags  = 2; // 从简历/JD 解析出的技能标签
+  int32  count          = 3;
+  repeated int64 exclude_ids = 4; // 本场已问过的题
+}
+
+message QuestionItem {
+  int64  id       = 1;
+  string content  = 2;
+  string category = 3; // basic | project | scenario | algorithm
+  int32  level    = 4;
+}
+
+message PickQuestionsResp {
+  repeated QuestionItem questions = 1;
+}
+
+message GenerateFollowupReq {
+  string question = 1;
+  string answer   = 2;
+  string resume_context = 3; // 相关项目经历片段
+}
+
+message GenerateFollowupResp {
+  string followup = 1;
+  bool   worth_following = 2; // 回答太差时为 false，建议换题
+}

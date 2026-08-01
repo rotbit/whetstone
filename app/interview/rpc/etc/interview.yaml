@@ -1,0 +1,8 @@
+Name: interview.rpc
+ListenOn: 0.0.0.0:9002
+
+# Redis（会话状态持久化，生成代码后在 config 中扩展）:
+#   Host: 127.0.0.1:6379
+# QuestionRpc:
+#   Endpoints:
+#     - 127.0.0.1:9003
