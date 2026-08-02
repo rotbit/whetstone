@@ -3,8 +3,8 @@ package userlogic
 import (
 	"context"
 
-	"github.com/yourname/whetstone/app/user/rpc/internal/svc"
-	"github.com/yourname/whetstone/app/user/rpc/pb"
+	"github.com/rotbit/whetstone/app/user/rpc/internal/svc"
+	"github.com/rotbit/whetstone/app/user/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

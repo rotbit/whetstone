@@ -6,8 +6,8 @@ package system
 import (
 	"net/http"
 
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/logic/system"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/svc"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/logic/system"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

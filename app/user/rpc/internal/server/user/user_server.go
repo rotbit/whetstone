@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"github.com/yourname/whetstone/app/user/rpc/internal/logic/user"
-	"github.com/yourname/whetstone/app/user/rpc/internal/svc"
-	"github.com/yourname/whetstone/app/user/rpc/pb"
+	"github.com/rotbit/whetstone/app/user/rpc/internal/logic/user"
+	"github.com/rotbit/whetstone/app/user/rpc/internal/svc"
+	"github.com/rotbit/whetstone/app/user/rpc/pb"
 )
 
 type UserServer struct {

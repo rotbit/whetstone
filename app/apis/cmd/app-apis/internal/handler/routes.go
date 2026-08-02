@@ -6,12 +6,12 @@ package handler
 import (
 	"net/http"
 
-	auth "github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/handler/auth"
-	interview "github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/handler/interview"
-	system "github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/handler/system"
-	user "github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/handler/user"
-	websocket "github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/handler/websocket"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/svc"
+	auth "github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/handler/auth"
+	interview "github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/handler/interview"
+	system "github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/handler/system"
+	user "github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/handler/user"
+	websocket "github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/handler/websocket"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

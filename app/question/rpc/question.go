@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/yourname/whetstone/app/question/rpc/internal/config"
-	questionServer "github.com/yourname/whetstone/app/question/rpc/internal/server/question"
-	"github.com/yourname/whetstone/app/question/rpc/internal/svc"
-	"github.com/yourname/whetstone/app/question/rpc/pb"
+	"github.com/rotbit/whetstone/app/question/rpc/internal/config"
+	questionServer "github.com/rotbit/whetstone/app/question/rpc/internal/server/question"
+	"github.com/rotbit/whetstone/app/question/rpc/internal/svc"
+	"github.com/rotbit/whetstone/app/question/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"

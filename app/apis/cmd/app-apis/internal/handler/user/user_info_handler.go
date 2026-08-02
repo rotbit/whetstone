@@ -3,8 +3,8 @@ package user
 import (
 	"net/http"
 
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/logic/user"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/svc"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/logic/user"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

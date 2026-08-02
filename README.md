@@ -38,9 +38,6 @@ whetstone/
 ## 快速开始
 
 ```bash
-# 0. 把 module 占位符替换成你的 GitHub 用户名（macOS）
-grep -rl 'github.com/yourname/whetstone' . | xargs sed -i '' 's#yourname#你的用户名#g'
-
 # 1. 安装 goctl 与 protoc 插件
 make install-tools
 

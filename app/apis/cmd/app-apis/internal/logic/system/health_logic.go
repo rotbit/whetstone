@@ -6,8 +6,8 @@ package system
 import (
 	"context"
 
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/svc"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/types"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -1,11 +1,11 @@
 package svc
 
 import (
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/config"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/ws/conn"
-	interviewclient "github.com/yourname/whetstone/app/interview/rpc/client/interview"
-	questionclient "github.com/yourname/whetstone/app/question/rpc/client/question"
-	userclient "github.com/yourname/whetstone/app/user/rpc/client/user"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/config"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/ws/conn"
+	interviewclient "github.com/rotbit/whetstone/app/interview/rpc/client/interview"
+	questionclient "github.com/rotbit/whetstone/app/question/rpc/client/question"
+	userclient "github.com/rotbit/whetstone/app/user/rpc/client/user"
 
 	"github.com/zeromicro/go-zero/zrpc"
 )

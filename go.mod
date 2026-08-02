@@ -1,4 +1,4 @@
-module github.com/yourname/whetstone
+module github.com/rotbit/whetstone
 
 go 1.22
 

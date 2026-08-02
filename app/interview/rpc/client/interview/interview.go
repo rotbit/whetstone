@@ -7,7 +7,7 @@ package interview
 import (
 	"context"
 
-	"github.com/yourname/whetstone/app/interview/rpc/pb"
+	"github.com/rotbit/whetstone/app/interview/rpc/pb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

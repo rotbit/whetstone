@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/config"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/handler"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/svc"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/config"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/handler"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"

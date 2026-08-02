@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"github.com/yourname/whetstone/app/question/rpc/internal/logic/question"
-	"github.com/yourname/whetstone/app/question/rpc/internal/svc"
-	"github.com/yourname/whetstone/app/question/rpc/pb"
+	"github.com/rotbit/whetstone/app/question/rpc/internal/logic/question"
+	"github.com/rotbit/whetstone/app/question/rpc/internal/svc"
+	"github.com/rotbit/whetstone/app/question/rpc/pb"
 )
 
 type QuestionServer struct {

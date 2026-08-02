@@ -3,9 +3,9 @@ package auth
 import (
 	"net/http"
 
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/logic/auth"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/svc"
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/types"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/logic/auth"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
 

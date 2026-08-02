@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"github.com/yourname/whetstone/app/interview/rpc/internal/logic/interview"
-	"github.com/yourname/whetstone/app/interview/rpc/internal/svc"
-	"github.com/yourname/whetstone/app/interview/rpc/pb"
+	"github.com/rotbit/whetstone/app/interview/rpc/internal/logic/interview"
+	"github.com/rotbit/whetstone/app/interview/rpc/internal/svc"
+	"github.com/rotbit/whetstone/app/interview/rpc/pb"
 )
 
 type InterviewServer struct {

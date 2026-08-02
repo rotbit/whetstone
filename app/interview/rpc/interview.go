@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/yourname/whetstone/app/interview/rpc/internal/config"
-	interviewServer "github.com/yourname/whetstone/app/interview/rpc/internal/server/interview"
-	"github.com/yourname/whetstone/app/interview/rpc/internal/svc"
-	"github.com/yourname/whetstone/app/interview/rpc/pb"
+	"github.com/rotbit/whetstone/app/interview/rpc/internal/config"
+	interviewServer "github.com/rotbit/whetstone/app/interview/rpc/internal/server/interview"
+	"github.com/rotbit/whetstone/app/interview/rpc/internal/svc"
+	"github.com/rotbit/whetstone/app/interview/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"

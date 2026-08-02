@@ -7,7 +7,7 @@ package question
 import (
 	"context"
 
-	"github.com/yourname/whetstone/app/question/rpc/pb"
+	"github.com/rotbit/whetstone/app/question/rpc/pb"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

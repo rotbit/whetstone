@@ -3,7 +3,7 @@ package websocket
 import (
 	"net/http"
 
-	"github.com/yourname/whetstone/app/apis/cmd/app-apis/internal/svc"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
 )
 
 func WebsocketHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {

@@ -1,6 +1,6 @@
 package svc
 
-import "github.com/yourname/whetstone/app/question/rpc/internal/config"
+import "github.com/rotbit/whetstone/app/question/rpc/internal/config"
 
 type ServiceContext struct {
 	Config config.Config

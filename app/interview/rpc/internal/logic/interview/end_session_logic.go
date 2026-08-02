@@ -3,8 +3,8 @@ package interviewlogic
 import (
 	"context"
 
-	"github.com/yourname/whetstone/app/interview/rpc/internal/svc"
-	"github.com/yourname/whetstone/app/interview/rpc/pb"
+	"github.com/rotbit/whetstone/app/interview/rpc/internal/svc"
+	"github.com/rotbit/whetstone/app/interview/rpc/pb"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
