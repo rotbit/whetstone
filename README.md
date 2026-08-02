@@ -83,7 +83,7 @@ curl http://127.0.0.1:8888/healthz
 
 每个容器只运行一个 Go 进程：`app-apis`、三个 RPC 和 `report-worker` 可以独立查看日志、重启和配置资源。只有 `app-apis:8888` 对外发布；生产镜像内仅包含 YAML 模板，真实密钥必须在运行时注入，不能提交到仓库。
 
-部署到 Dokploy 时创建五个独立 Application，共用同一个仓库并分别选择 Dockerfile 的同名构建阶段。生产配置默认通过 Environment 级变量集中管理，也支持 File Mount 覆盖完整 YAML。具体设置见 [deploy/dokploy/README.md](deploy/dokploy/README.md)。
+部署到 Dokploy 时创建五个独立 Application，共用同一个仓库并分别选择 Dockerfile 的同名构建阶段。生产配置默认通过 Environment 级变量集中管理，也支持 File Mount 覆盖完整 YAML。具体设置见 [deploy/dokploy/README.md](deploy/dokploy/README.md)，MySQL、Redis、Qdrant、MinIO 的生产配置见 [deploy/dokploy/INFRASTRUCTURE.md](deploy/dokploy/INFRASTRUCTURE.md)。
 
 ## M1 路线（文字版 MVP，4-6 周）
 

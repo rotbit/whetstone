@@ -1,0 +1,24 @@
+services:
+  minio:
+    image: pgsty/minio:RELEASE.2026-06-18T00-00-00Z
+    restart: unless-stopped
+    volumes:
+      - minio-data:/data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    expose:
+      - "9000"
+      - "9001"
+    networks:
+      dokploy-network:
+        aliases:
+          - whetstone-minio
+
+volumes:
+  minio-data: {}
+
+networks:
+  dokploy-network:
+    external: true

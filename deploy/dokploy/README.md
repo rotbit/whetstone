@@ -2,6 +2,8 @@
 
 生产环境在同一个 Dokploy Project / Environment 中创建五个独立 **Application**。每个 Application 只运行一个 Go 进程，可以独立部署、回滚、扩容、查看日志和限制资源。
 
+MySQL、Redis、Qdrant、MinIO 的生产资源、内部地址、密钥位置和备份要求见 [INFRASTRUCTURE.md](INFRASTRUCTURE.md)。
+
 | Application | Docker Build Stage | 内部端口 | 公网域名 |
 |---|---|---:|---|
 | `app-apis` | `app-apis` | 8888 | 需要 |
@@ -82,6 +84,8 @@ LOG_LEVEL=${{environment.WHETSTONE_LOG_LEVEL}}
 LOG_STAT=${{environment.WHETSTONE_LOG_STAT}}
 TZ=${{environment.WHETSTONE_TZ}}
 ```
+
+数据库和对象存储凭据按最小权限配置到真正需要它们的 Application，不要把全套基础设施密钥复制给所有服务。变量名称和当前生产内网地址见 [INFRASTRUCTURE.md](INFRASTRUCTURE.md)。
 
 镜像中的 YAML 是结构模板，go-zero 启动时用 Environment Variables 展开 `${VARIABLE}`。真实密钥不提交到 Git，也不通过镜像构建参数传递。
 
