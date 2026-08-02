@@ -1,0 +1,97 @@
+x-common-environment: &common-environment
+  CONFIG_SOURCE: env
+  LOG_LEVEL: ${LOG_LEVEL:-info}
+  LOG_STAT: ${LOG_STAT:-false}
+  TZ: ${TZ:-Asia/Shanghai}
+
+services:
+  app-apis:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: app-apis
+    restart: unless-stopped
+    environment:
+      <<: *common-environment
+      AUTH_ACCESS_SECRET: ${AUTH_ACCESS_SECRET:?AUTH_ACCESS_SECRET is required}
+      AUTH_ACCESS_EXPIRE: ${AUTH_ACCESS_EXPIRE:-604800}
+      WEBSOCKET_PUBLIC_URL: ${WEBSOCKET_PUBLIC_URL:?WEBSOCKET_PUBLIC_URL is required}
+      USER_RPC_ENDPOINT: user-rpc:9001
+      INTERVIEW_RPC_ENDPOINT: interview-rpc:9002
+      QUESTION_RPC_ENDPOINT: question-rpc:9003
+    depends_on:
+      - user-rpc
+      - interview-rpc
+      - question-rpc
+    expose:
+      - "8888"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8888/healthz"]
+      interval: 15s
+      timeout: 3s
+      start_period: 20s
+      retries: 3
+    networks:
+      - whetstone-network
+      - dokploy-network
+
+  user-rpc:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: user-rpc
+    restart: unless-stopped
+    environment:
+      <<: *common-environment
+    expose:
+      - "9001"
+    networks:
+      - whetstone-network
+
+  interview-rpc:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: interview-rpc
+    restart: unless-stopped
+    environment:
+      <<: *common-environment
+    expose:
+      - "9002"
+    networks:
+      - whetstone-network
+
+  question-rpc:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: question-rpc
+    restart: unless-stopped
+    environment:
+      <<: *common-environment
+    expose:
+      - "9003"
+    networks:
+      - whetstone-network
+
+  report-worker:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: report-worker
+    restart: unless-stopped
+    environment:
+      <<: *common-environment
+    networks:
+      - whetstone-network
+
+networks:
+  whetstone-network:
+    driver: bridge
+  dokploy-network:
+    external: true

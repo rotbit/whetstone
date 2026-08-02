@@ -1,6 +1,6 @@
 <svg viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AI 面试陪练平台总体架构图" style="font-family:'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif">
   <title>AI 面试陪练平台总体架构（Go + go-zero）</title>
-  <desc>客户端经 api-gateway 与 ws-gateway 接入；核心服务层包含 interview-rpc、question-rpc、user-rpc、report-worker；llm-adapter 统一封装 LLM、ASR、TTS 上游服务；基础设施为 MySQL、Redis、Qdrant、OSS、asynq；右侧为支付渠道与上游 AI 服务。</desc>
+  <desc>客户端经统一 app-apis 的 REST 与 WebSocket 接入；核心服务层包含 interview-rpc、question-rpc、user-rpc、report-worker；llm-adapter 统一封装 LLM、ASR、TTS 上游服务；基础设施为 MySQL、Redis、Qdrant、OSS、asynq；右侧为支付渠道与上游 AI 服务。</desc>
   <defs>
     <marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
       <path d="M0,0 L8,4 L0,8 z" fill="#475569"/>
@@ -23,20 +23,24 @@
   <line x1="345" y1="114" x2="345" y2="136" stroke="#475569" stroke-width="1.5" marker-end="url(#ar)"/>
   <line x1="555" y1="114" x2="555" y2="136" stroke="#475569" stroke-width="1.5" marker-end="url(#ar)"/>
 
+  <!-- Dokploy Compose 部署边界 -->
+  <rect x="25" y="128" width="640" height="286" rx="12" fill="none" stroke="#64748B" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="650" y="124" text-anchor="end" font-size="11" font-weight="600" fill="#475569">Dokploy Compose · 5 个独立容器</text>
+
   <!-- 接入层 -->
   <rect x="40" y="142" width="295" height="84" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
-  <text x="187" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#065F46">api-gateway · REST</text>
+  <text x="187" y="168" text-anchor="middle" font-size="14" font-weight="700" fill="#065F46">app-apis · REST</text>
   <text x="187" y="192" text-anchor="middle" font-size="11.5" fill="#047857">用户 · 简历上传 · 订单 · 报告</text>
   <rect x="355" y="142" width="295" height="84" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
-  <text x="502" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#065F46">ws-gateway · WebSocket</text>
+  <text x="502" y="164" text-anchor="middle" font-size="14" font-weight="700" fill="#065F46">app-apis · WebSocket</text>
   <text x="502" y="186" text-anchor="middle" font-size="11.5" fill="#047857">心跳 · 断线重连 · 会话恢复</text>
-  <text x="502" y="208" text-anchor="middle" font-size="11.5" fill="#047857">上行音频/文本 · 下行音频流</text>
+  <text x="502" y="208" text-anchor="middle" font-size="11.5" fill="#047857">同一进程 · 上行音频/文本 · 下行音频流</text>
 
   <line x1="187" y1="226" x2="187" y2="248" stroke="#475569" stroke-width="1.5" marker-end="url(#ar)"/>
   <line x1="502" y1="226" x2="502" y2="248" stroke="#475569" stroke-width="1.5" marker-end="url(#ar)"/>
 
   <!-- 核心服务层 -->
-  <text x="40" y="246" font-size="11" fill="#64748b">核心服务层（zRPC）</text>
+  <text x="40" y="246" font-size="11" fill="#64748b">核心服务层（独立容器 · zRPC）</text>
   <rect x="40" y="254" width="140" height="64" rx="8" fill="#FFF7ED" stroke="#F59E0B" stroke-width="1.5"/>
   <text x="110" y="278" text-anchor="middle" font-size="13" font-weight="700" fill="#92400E">interview-rpc</text>
   <text x="110" y="298" text-anchor="middle" font-size="10.5" fill="#B45309">面试引擎 · 追问</text>

@@ -1,4 +1,91 @@
 services:
+  app-apis:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: app-apis
+    restart: unless-stopped
+    environment:
+      CONFIG_SOURCE: env
+      AUTH_ACCESS_SECRET: whetstone-dev-secret-change-me
+      AUTH_ACCESS_EXPIRE: "604800"
+      WEBSOCKET_PUBLIC_URL: ws://127.0.0.1:8888/ws
+      USER_RPC_ENDPOINT: user-rpc:9001
+      INTERVIEW_RPC_ENDPOINT: interview-rpc:9002
+      QUESTION_RPC_ENDPOINT: question-rpc:9003
+      LOG_LEVEL: info
+      LOG_STAT: "false"
+      TZ: Asia/Shanghai
+    depends_on:
+      - user-rpc
+      - interview-rpc
+      - question-rpc
+      - mysql
+      - redis
+      - qdrant
+      - minio
+    ports:
+      - "8888:8888"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8888/healthz"]
+      interval: 15s
+      timeout: 3s
+      start_period: 20s
+      retries: 3
+
+  user-rpc:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: user-rpc
+    restart: unless-stopped
+    environment:
+      CONFIG_SOURCE: env
+      LOG_LEVEL: info
+      LOG_STAT: "false"
+      TZ: Asia/Shanghai
+
+  interview-rpc:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: interview-rpc
+    restart: unless-stopped
+    environment:
+      CONFIG_SOURCE: env
+      LOG_LEVEL: info
+      LOG_STAT: "false"
+      TZ: Asia/Shanghai
+
+  question-rpc:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: question-rpc
+    restart: unless-stopped
+    environment:
+      CONFIG_SOURCE: env
+      LOG_LEVEL: info
+      LOG_STAT: "false"
+      TZ: Asia/Shanghai
+
+  report-worker:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        SERVICE: report-worker
+    restart: unless-stopped
+    environment:
+      CONFIG_SOURCE: env
+      LOG_LEVEL: info
+      LOG_STAT: "false"
+      TZ: Asia/Shanghai
+
   mysql:
     image: mysql:8.0
     container_name: whetstone-mysql

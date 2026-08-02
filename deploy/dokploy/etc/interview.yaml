@@ -1,0 +1,9 @@
+Name: interview-rpc
+Mode: pro
+ListenOn: 0.0.0.0:9002
+
+Log:
+  Mode: console
+  Encoding: json
+  Level: ${LOG_LEVEL}
+  Stat: ${LOG_STAT}

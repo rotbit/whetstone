@@ -25,3 +25,5 @@ vendor/
 # Local env
 *.local.yaml
 .env
+.env.*
+.env

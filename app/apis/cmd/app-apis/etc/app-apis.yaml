@@ -1,0 +1,22 @@
+Name: app-apis
+Host: 0.0.0.0
+Port: 8888
+
+Auth:
+  AccessSecret: whetstone-dev-secret-change-me
+  AccessExpire: 604800
+
+UserRpc:
+  Endpoints:
+    - 127.0.0.1:9001
+
+InterviewRpc:
+  Endpoints:
+    - 127.0.0.1:9002
+
+QuestionRpc:
+  Endpoints:
+    - 127.0.0.1:9003
+
+Websocket:
+  PublicUrl: ws://127.0.0.1:8888/ws

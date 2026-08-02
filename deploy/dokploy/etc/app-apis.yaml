@@ -1,0 +1,29 @@
+Name: app-apis
+Host: 0.0.0.0
+Port: 8888
+Mode: pro
+
+Log:
+  Mode: console
+  Encoding: json
+  Level: ${LOG_LEVEL}
+  Stat: ${LOG_STAT}
+
+Auth:
+  AccessSecret: "${AUTH_ACCESS_SECRET}"
+  AccessExpire: ${AUTH_ACCESS_EXPIRE}
+
+UserRpc:
+  Endpoints:
+    - ${USER_RPC_ENDPOINT}
+
+InterviewRpc:
+  Endpoints:
+    - ${INTERVIEW_RPC_ENDPOINT}
+
+QuestionRpc:
+  Endpoints:
+    - ${QUESTION_RPC_ENDPOINT}
+
+Websocket:
+  PublicUrl: "${WEBSOCKET_PUBLIC_URL}"
