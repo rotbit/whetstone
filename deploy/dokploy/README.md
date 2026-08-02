@@ -1,115 +1,109 @@
-# Dokploy 多容器部署说明
+# Dokploy 五 Application 部署说明
 
-本项目在 Dokploy 中按一个 **Docker Compose** 项目部署，包含五个容器，每个容器只运行一个 Go 进程：
+生产环境在同一个 Dokploy Project / Environment 中创建五个独立 **Application**。每个 Application 只运行一个 Go 进程，可以独立部署、回滚、扩容、查看日志和限制资源。
 
-| Compose 服务 | 内部端口 | 对外发布 | 职责 |
-|---|---:|---|---|
-| `app-apis` | 8888 | 是 | REST / WebSocket 网关 |
-| `user-rpc` | 9001 | 否 | 用户、次数和订单 |
-| `interview-rpc` | 9002 | 否 | 面试引擎 |
-| `question-rpc` | 9003 | 否 | 题库和 RAG |
-| `report-worker` | - | 否 | 异步报告任务 |
+| Application | Docker Build Stage | 内部端口 | 公网域名 |
+|---|---|---:|---|
+| `app-apis` | `app-apis` | 8888 | 需要 |
+| `user-rpc` | `user-rpc` | 9001 | 不需要 |
+| `interview-rpc` | `interview-rpc` | 9002 | 不需要 |
+| `question-rpc` | `question-rpc` | 9003 | 不需要 |
+| `report-worker` | `report-worker` | - | 不需要 |
 
-`app-apis` 通过 Compose DNS 访问 `user-rpc:9001`、`interview-rpc:9002` 和 `question-rpc:9003`。不需要为 RPC 创建公网域名或发布主机端口。
+根目录 `Dockerfile` 为五个服务提供同名的命名阶段。Dokploy 不需要 Docker build argument，只需要为每个 Application 选择对应的 `Docker Build Stage`。
 
-## 1. 创建 Dokploy Compose
+## 1. 创建 Application
 
-1. 在 Dokploy 中创建 Project 和 Environment。
-2. 创建 `Docker Compose` 服务，Compose Type 选择 **Docker Compose**，不要选择 Stack。
-3. Source 选择 GitHub 或 Git，配置仓库和部署分支。
-4. Compose Path 填 `./deploy/dokploy/docker-compose.yml`。
-5. 保存下面的环境变量，然后点击 Deploy。
-6. 在 Domains 中为 `app-apis` 添加域名，Container Port 填 `8888`。
+五个 Application 使用相同的代码源：
 
-选择 Docker Compose 是因为当前配置使用 `build` 从同一仓库生成五个服务镜像；Dokploy 的 Stack 模式不支持 `build`。
-
-## 2. 环境变量
-
-在 Compose 的 Environment 页面配置：
-
-```dotenv
-AUTH_ACCESS_SECRET=请替换为至少32位随机字符串
-AUTH_ACCESS_EXPIRE=604800
-WEBSOCKET_PUBLIC_URL=wss://api.example.com/ws
-LOG_LEVEL=info
-LOG_STAT=false
-TZ=Asia/Shanghai
+```text
+Repository URL: https://github.com/rotbit/whetstone.git
+Branch: master
+Build Path: /
+Build Type: Dockerfile
+Dockerfile Path: Dockerfile
+Docker Context Path: .
 ```
 
-可以用下面的命令生成 JWT 密钥：
+每个 Application 的 `Docker Build Stage` 按上表填写。先部署三个 RPC 和 `report-worker`，最后部署 `app-apis`。
+
+Dokploy 会为每个 Application 生成唯一的内部服务名，例如：
+
+```text
+whetstone-user-rpc-xxxxxx
+```
+
+五个 Application 默认连接到 Dokploy 的共享网络。`app-apis` 使用这三个实际服务名访问 RPC：
+
+```text
+USER_RPC_ENDPOINT=whetstone-user-rpc-xxxxxx:9001
+INTERVIEW_RPC_ENDPOINT=whetstone-interview-rpc-xxxxxx:9002
+QUESTION_RPC_ENDPOINT=whetstone-question-rpc-xxxxxx:9003
+```
+
+不要在 Advanced / Ports 中发布 RPC 端口，也不要给 RPC 创建公网域名。
+
+## 2. 集中管理配置
+
+推荐在 Dokploy Environment 级别维护可复用配置和密钥：
+
+```dotenv
+WHETSTONE_AUTH_ACCESS_SECRET=请替换为至少32位随机字符串
+WHETSTONE_AUTH_ACCESS_EXPIRE=604800
+WHETSTONE_WEBSOCKET_PUBLIC_URL=wss://api.example.com/ws
+WHETSTONE_USER_RPC_ENDPOINT=whetstone-user-rpc-xxxxxx:9001
+WHETSTONE_INTERVIEW_RPC_ENDPOINT=whetstone-interview-rpc-xxxxxx:9002
+WHETSTONE_QUESTION_RPC_ENDPOINT=whetstone-question-rpc-xxxxxx:9003
+WHETSTONE_LOG_LEVEL=info
+WHETSTONE_LOG_STAT=false
+WHETSTONE_TZ=Asia/Shanghai
+```
+
+`app-apis` 的 Environment：
+
+```dotenv
+CONFIG_SOURCE=env
+AUTH_ACCESS_SECRET=${{environment.WHETSTONE_AUTH_ACCESS_SECRET}}
+AUTH_ACCESS_EXPIRE=${{environment.WHETSTONE_AUTH_ACCESS_EXPIRE}}
+WEBSOCKET_PUBLIC_URL=${{environment.WHETSTONE_WEBSOCKET_PUBLIC_URL}}
+USER_RPC_ENDPOINT=${{environment.WHETSTONE_USER_RPC_ENDPOINT}}
+INTERVIEW_RPC_ENDPOINT=${{environment.WHETSTONE_INTERVIEW_RPC_ENDPOINT}}
+QUESTION_RPC_ENDPOINT=${{environment.WHETSTONE_QUESTION_RPC_ENDPOINT}}
+LOG_LEVEL=${{environment.WHETSTONE_LOG_LEVEL}}
+LOG_STAT=${{environment.WHETSTONE_LOG_STAT}}
+TZ=${{environment.WHETSTONE_TZ}}
+```
+
+三个 RPC 和 `report-worker` 的 Environment：
+
+```dotenv
+CONFIG_SOURCE=env
+LOG_LEVEL=${{environment.WHETSTONE_LOG_LEVEL}}
+LOG_STAT=${{environment.WHETSTONE_LOG_STAT}}
+TZ=${{environment.WHETSTONE_TZ}}
+```
+
+镜像中的 YAML 是结构模板，go-zero 启动时用 Environment Variables 展开 `${VARIABLE}`。真实密钥不提交到 Git，也不通过镜像构建参数传递。
+
+如果以后需要远程维护整份 YAML，可以在对应 Application 的 Advanced / Volumes 中创建 File Mount，把文件只读挂载到 `/etc/whetstone/<service>.yaml`，并把 `CONFIG_SOURCE` 改为 `file`。日常配置仍建议使用 Environment Variables，结构复杂且非敏感的配置才使用 File Mount。
+
+## 3. 域名和 HTTPS
+
+只在 `app-apis` 的 Domains 页面添加域名：
+
+```text
+Container Port: 8888
+Path: /
+HTTPS: 开启
+Certificate: Let's Encrypt
+```
+
+Domains 中的 Container Port 只供 Traefik 内部转发，不会把 `8888` 直接发布到公网，因此无需在 Advanced / Ports 中再添加端口。
+
+发布后检查：
 
 ```bash
-openssl rand -hex 32
-```
-
-Dokploy 会把 Compose Environment 保存为 `.env`；`docker-compose.yml` 已显式使用 `${VARIABLE}` 将需要的变量注入相应容器。
-
-如果希望跨服务或跨环境复用密钥，可以先定义 Environment-level Variable：
-
-```dotenv
-WHETSTONE_AUTH_ACCESS_SECRET=真实密钥
-```
-
-再在 Compose Environment 中引用：
-
-```dotenv
-AUTH_ACCESS_SECRET=${{environment.WHETSTONE_AUTH_ACCESS_SECRET}}
-```
-
-不要把真实密钥提交到 Git，也不要通过 Docker build argument 传递密钥。修改运行配置后重新 Deploy。
-
-## 3. YAML 配置管理
-
-镜像中的生产 YAML 是模板，go-zero 启动时会展开运行环境中的 `${VARIABLE}`。默认情况下只需要维护 Dokploy Environment，不需要远程挂载 YAML。
-
-配置文件在各容器中的路径为：
-
-```text
-/etc/whetstone/app-apis.yaml
-/etc/whetstone/user.yaml
-/etc/whetstone/interview.yaml
-/etc/whetstone/question.yaml
-```
-
-如需整份 YAML 远程覆盖，可以使用 Dokploy File Mount。对于 Compose，文件会保存在 Dokploy 为该项目维护的 `files` 目录中，需要在 Compose 中为对应服务增加只读挂载，例如：
-
-```yaml
-services:
-  app-apis:
-    environment:
-      CONFIG_SOURCE: file
-    volumes:
-      - ../../../files/app-apis.yaml:/etc/whetstone/app-apis.yaml:ro
-```
-
-这里使用 `../../../files`，是因为 Compose 文件位于仓库的 `deploy/dokploy` 子目录，而 Dokploy 的持久化 `files` 目录位于仓库 `code` 目录的同级。
-
-密钥仍建议放 Environment Variables；File Mount 更适合结构复杂的非敏感配置。
-
-## 4. 日志和资源
-
-进入 Compose 的 Logs 页面，可以按服务选择：
-
-```text
-app-apis
-user-rpc
-interview-rpc
-question-rpc
-report-worker
-```
-
-每个容器只包含一个进程，日志不再混合。go-zero 和 Worker 都输出 JSON，并包含 `service` 字段。构建失败或发布失败则进入 Deployments 查看对应部署记录。
-
-Monitoring 也可以分别查看五个容器的 CPU、内存、磁盘和网络；后续可对单个服务设置资源限制或独立扩容。
-
-## 5. 发布顺序和健康检查
-
-Compose 会先创建三个 RPC，再启动 `app-apis`。如果 RPC 尚未就绪导致网关首次启动失败，`restart: unless-stopped` 会自动重启网关。
-
-Compose 为 `app-apis` 配置了健康检查：
-
-```text
-GET http://127.0.0.1:8888/healthz
+curl https://api.example.com/healthz
 ```
 
 预期响应：
@@ -118,9 +112,26 @@ GET http://127.0.0.1:8888/healthz
 {"status":"ok"}
 ```
 
+## 4. 日志、监控和发布
+
+每个 Application 都有独立的页面：
+
+- `Logs`：查看当前服务 stdout/stderr 的 JSON 日志。
+- `Deployments`：查看构建和发布过程，定位构建失败。
+- `Monitoring`：分别查看 CPU、内存、磁盘和网络。
+- `Advanced / Resources`：为单个服务设置 CPU 和内存限制。
+- `General / Deploy`：只重新发布当前服务。
+
+日志由 go-zero 和 Worker 直接写 stdout/stderr，不在容器内部保存日志文件，因此 Dokploy 可以实时查看并负责容器日志轮转。
+
+## 5. 旧 Compose
+
+`deploy/dokploy/docker-compose.yml` 暂时保留为迁移回滚方案，不再作为生产环境的主部署入口。五个 Application 全部验证通过后，应在 Dokploy 中停用旧 Compose，避免重复运行和资源浪费。
+
 ## 官方资料
 
-- [Dokploy Docker Compose](https://docs.dokploy.com/docs/core/docker-compose)
-- [Docker Compose Domains](https://docs.dokploy.com/docs/core/docker-compose/domains)
+- [Dokploy Applications](https://docs.dokploy.com/docs/core/applications)
+- [Dockerfile Build Type](https://docs.dokploy.com/docs/core/applications/build-type)
 - [Environment Variables](https://docs.dokploy.com/docs/core/variables)
-- [Dokploy Troubleshooting / File Mounts](https://docs.dokploy.com/docs/core/troubleshooting)
+- [Domains](https://docs.dokploy.com/docs/core/domains)
+- [Application Advanced Settings](https://docs.dokploy.com/docs/core/applications/advanced)

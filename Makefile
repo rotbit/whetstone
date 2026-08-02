@@ -133,7 +133,7 @@ build-report-worker:
 
 docker-build:
 	@case " $(DOCKER_SERVICES) " in *" $(SERVICE) "*) ;; *) echo "unsupported SERVICE: $(SERVICE)"; exit 1 ;; esac
-	docker build --build-arg SERVICE=$(SERVICE) -t $(IMAGE) .
+	docker build --target $(SERVICE) -t $(IMAGE) .
 
 docker-build-all: docker-build-app-apis docker-build-user-rpc docker-build-interview-rpc docker-build-question-rpc docker-build-report-worker
 

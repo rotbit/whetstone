@@ -9,8 +9,7 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
-      args:
-        SERVICE: app-apis
+      target: app-apis
     restart: unless-stopped
     environment:
       <<: *common-environment
@@ -40,8 +39,7 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
-      args:
-        SERVICE: user-rpc
+      target: user-rpc
     restart: unless-stopped
     environment:
       <<: *common-environment
@@ -54,8 +52,7 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
-      args:
-        SERVICE: interview-rpc
+      target: interview-rpc
     restart: unless-stopped
     environment:
       <<: *common-environment
@@ -68,8 +65,7 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
-      args:
-        SERVICE: question-rpc
+      target: question-rpc
     restart: unless-stopped
     environment:
       <<: *common-environment
@@ -82,8 +78,7 @@ services:
     build:
       context: ../..
       dockerfile: Dockerfile
-      args:
-        SERVICE: report-worker
+      target: report-worker
     restart: unless-stopped
     environment:
       <<: *common-environment
