@@ -1,9 +1,18 @@
 Name: user-rpc
 Mode: pro
 ListenOn: 0.0.0.0:9001
+Timeout: 10000
+
+Middlewares:
+  StatConf:
+    IgnoreContentMethods:
+      - /user.User/Register
 
 Log:
   Mode: console
   Encoding: json
   Level: ${LOG_LEVEL}
   Stat: ${LOG_STAT}
+
+Mysql:
+  DataSource: "${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${MYSQL_DATABASE}?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai&timeout=5s&readTimeout=5s&writeTimeout=5s"

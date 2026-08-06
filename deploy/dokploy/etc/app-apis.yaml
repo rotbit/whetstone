@@ -2,6 +2,10 @@ Name: app-apis
 Host: 0.0.0.0
 Port: 8888
 Mode: pro
+Timeout: 12000
+
+Middlewares:
+  Log: false
 
 Log:
   Mode: console
@@ -14,6 +18,7 @@ Auth:
   AccessExpire: ${AUTH_ACCESS_EXPIRE}
 
 UserRpc:
+  Timeout: 10000
   Endpoints:
     - ${USER_RPC_ENDPOINT}
 

@@ -76,7 +76,21 @@ LOG_STAT=${{environment.WHETSTONE_LOG_STAT}}
 TZ=${{environment.WHETSTONE_TZ}}
 ```
 
-三个 RPC 和 `report-worker` 的 Environment：
+`user-rpc` 的 Environment：
+
+```dotenv
+CONFIG_SOURCE=env
+MYSQL_HOST=${{environment.MYSQL_HOST}}
+MYSQL_PORT=${{environment.MYSQL_PORT}}
+MYSQL_DATABASE=${{environment.MYSQL_DATABASE}}
+MYSQL_USER=${{environment.MYSQL_USER}}
+MYSQL_PASSWORD=${{environment.MYSQL_PASSWORD}}
+LOG_LEVEL=${{environment.WHETSTONE_LOG_LEVEL}}
+LOG_STAT=${{environment.WHETSTONE_LOG_STAT}}
+TZ=${{environment.WHETSTONE_TZ}}
+```
+
+其余两个 RPC 和 `report-worker` 的 Environment：
 
 ```dotenv
 CONFIG_SOURCE=env

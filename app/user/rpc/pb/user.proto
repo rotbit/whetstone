@@ -5,6 +5,8 @@ option go_package = "./pb";
 
 // 用户域内部服务：用户信息 / 次数幂等扣减
 service User {
+  rpc Register(RegisterReq) returns (RegisterResp);
+
   rpc GetUser(GetUserReq) returns (UserInfo);
 
   // 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
@@ -12,6 +14,17 @@ service User {
 
   // 面试异常中断时回补次数（同样以 session_id 幂等）
   rpc RefundCredit(RefundCreditReq) returns (RefundCreditResp);
+}
+
+message RegisterReq {
+  string phone    = 1;
+  string password = 2;
+}
+
+message RegisterResp {
+  int64  user_id = 1;
+  string phone   = 2;
+  string plan    = 3;
 }
 
 message GetUserReq {

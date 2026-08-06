@@ -1,5 +1,14 @@
 Name: user.rpc
 ListenOn: 0.0.0.0:9001
+Timeout: 10000
+
+Middlewares:
+  StatConf:
+    IgnoreContentMethods:
+      - /user.User/Register
+
+Mysql:
+  DataSource: "${MYSQL_USER}:${MYSQL_PASSWORD}@tcp(${MYSQL_HOST}:${MYSQL_PORT})/${MYSQL_DATABASE}?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai&timeout=5s&readTimeout=5s&writeTimeout=5s"
 
 # M1 用直连（api 侧配 Endpoints），暂不引入 etcd
 # Etcd:

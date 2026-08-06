@@ -65,8 +65,7 @@ type QaItem struct {
 
 type RegisterReq struct {
 	Phone    string `json:"phone"`
-	Code     string `json:"code"`
-	Password string `json:"password,optional"`
+	Password string `json:"password"`
 }
 
 type ResumeResp struct {

@@ -13,8 +13,7 @@ type (
 	}
 	RegisterReq {
 		Phone    string `json:"phone"`
-		Code     string `json:"code"`
-		Password string `json:"password,optional"`
+		Password string `json:"password"`
 	}
 	LoginReq {
 		Phone    string `json:"phone"`

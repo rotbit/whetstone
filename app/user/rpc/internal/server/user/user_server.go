@@ -23,6 +23,11 @@ func NewUserServer(svcCtx *svc.ServiceContext) *UserServer {
 	}
 }
 
+func (s *UserServer) Register(ctx context.Context, in *pb.RegisterReq) (*pb.RegisterResp, error) {
+	l := userlogic.NewRegisterLogic(ctx, s.svcCtx)
+	return l.Register(in)
+}
+
 func (s *UserServer) GetUser(ctx context.Context, in *pb.GetUserReq) (*pb.UserInfo, error) {
 	l := userlogic.NewGetUserLogic(ctx, s.svcCtx)
 	return l.GetUser(in)

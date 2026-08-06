@@ -19,9 +19,12 @@ type (
 	GetUserReq       = pb.GetUserReq
 	RefundCreditReq  = pb.RefundCreditReq
 	RefundCreditResp = pb.RefundCreditResp
+	RegisterReq      = pb.RegisterReq
+	RegisterResp     = pb.RegisterResp
 	UserInfo         = pb.UserInfo
 
 	User interface {
+		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 		GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*UserInfo, error)
 		// 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
 		DeductCredit(ctx context.Context, in *DeductCreditReq, opts ...grpc.CallOption) (*DeductCreditResp, error)
@@ -38,6 +41,11 @@ func NewUser(cli zrpc.Client) User {
 	return &defaultUser{
 		cli: cli,
 	}
+}
+
+func (m *defaultUser) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error) {
+	client := pb.NewUserClient(m.cli.Conn())
+	return client.Register(ctx, in, opts...)
 }
 
 func (m *defaultUser) GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*UserInfo, error) {

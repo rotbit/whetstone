@@ -6,6 +6,7 @@ import (
 
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/config"
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/handler"
+	appmiddleware "github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/middleware"
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -24,6 +25,7 @@ func main() {
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
+	server.Use(appmiddleware.SafeLog)
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)

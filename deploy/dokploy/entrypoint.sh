@@ -28,6 +28,13 @@ case "${service}" in
     ;;
   user-rpc)
     config_file="${config_dir}/user.yaml"
+    if [ "${config_source}" = "env" ]; then
+      : "${MYSQL_HOST:?MYSQL_HOST is required when CONFIG_SOURCE=env}"
+      : "${MYSQL_PORT:?MYSQL_PORT is required when CONFIG_SOURCE=env}"
+      : "${MYSQL_DATABASE:?MYSQL_DATABASE is required when CONFIG_SOURCE=env}"
+      : "${MYSQL_USER:?MYSQL_USER is required when CONFIG_SOURCE=env}"
+      : "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required when CONFIG_SOURCE=env}"
+    fi
     ;;
   interview-rpc)
     config_file="${config_dir}/interview.yaml"

@@ -1,12 +1,17 @@
 Name: app-apis
 Host: 0.0.0.0
 Port: 8888
+Timeout: 12000
+
+Middlewares:
+  Log: false
 
 Auth:
   AccessSecret: whetstone-dev-secret-change-me
   AccessExpire: 604800
 
 UserRpc:
+  Timeout: 10000
   Endpoints:
     - 127.0.0.1:9001
 

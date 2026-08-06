@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
+	User_Register_FullMethodName     = "/user.User/Register"
 	User_GetUser_FullMethodName      = "/user.User/GetUser"
 	User_DeductCredit_FullMethodName = "/user.User/DeductCredit"
 	User_RefundCredit_FullMethodName = "/user.User/RefundCredit"
@@ -30,6 +31,7 @@ const (
 //
 // 用户域内部服务：用户信息 / 次数幂等扣减
 type UserClient interface {
+	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 	GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*UserInfo, error)
 	// 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
 	DeductCredit(ctx context.Context, in *DeductCreditReq, opts ...grpc.CallOption) (*DeductCreditResp, error)
@@ -43,6 +45,16 @@ type userClient struct {
 
 func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 	return &userClient{cc}
+}
+
+func (c *userClient) Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RegisterResp)
+	err := c.cc.Invoke(ctx, User_Register_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *userClient) GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*UserInfo, error) {
@@ -81,6 +93,7 @@ func (c *userClient) RefundCredit(ctx context.Context, in *RefundCreditReq, opts
 //
 // 用户域内部服务：用户信息 / 次数幂等扣减
 type UserServer interface {
+	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	GetUser(context.Context, *GetUserReq) (*UserInfo, error)
 	// 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
 	DeductCredit(context.Context, *DeductCreditReq) (*DeductCreditResp, error)
@@ -93,6 +106,9 @@ type UserServer interface {
 type UnimplementedUserServer struct {
 }
 
+func (UnimplementedUserServer) Register(context.Context, *RegisterReq) (*RegisterResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
 func (UnimplementedUserServer) GetUser(context.Context, *GetUserReq) (*UserInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
@@ -113,6 +129,24 @@ type UnsafeUserServer interface {
 
 func RegisterUserServer(s grpc.ServiceRegistrar, srv UserServer) {
 	s.RegisterService(&User_ServiceDesc, srv)
+}
+
+func _User_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_Register_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).Register(ctx, req.(*RegisterReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _User_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -176,6 +210,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "user.User",
 	HandlerType: (*UserServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Register",
+			Handler:    _User_Register_Handler,
+		},
 		{
 			MethodName: "GetUser",
 			Handler:    _User_GetUser_Handler,
