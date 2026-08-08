@@ -2,8 +2,11 @@ package auth
 
 import (
 	"context"
-	"errors"
+	"time"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
+	userclient "github.com/rotbit/whetstone/app/user/rpc/client/user"
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/types"
 
@@ -25,16 +28,29 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(req *types.LoginReq) (resp *types.TokenResp, err error) {
-	// todo: add your logic here and delete this line
-	if req.Phone == "19900008007" && req.Password == "TestPass123" {
-		l.Logger.Info("登录成功")
-		return &types.TokenResp{
-			AccessToken: "1123456",
-			ExpireAt:    1786000000,
-		}, nil
-
+	logined,err := l.svcCtx.UserRpc.Login(l.ctx,&userclient.LoginRep{
+		Phone: req.Phone,
+		Password: req.Password,
+	})
+	if err != nil {
+		return nil, err
 	}
-	l.Logger.Error("登录失败")
-	return nil, errors.New("账号或者密码错误")
-
+	now := time.Now().Unix()
+	expireAt := now + l.svcCtx.Config.Auth.AccessExpire
+	accessToken, err := createAccessToken(
+		l.svcCtx.Config.Auth.AccessSecret,
+		now,
+		expireAt,
+		logined.UserId,
+	)
+	if err != nil {
+		l.Errorf("create access token failed: %v", err)
+		return nil, status.Error(codes.Internal, "登录失败")
+	}
+	
+	l.Logger.Info("登录成功",logined)
+	return &types.TokenResp{
+		AccessToken: accessToken,
+		ExpireAt:    expireAt,
+	},nil
 }

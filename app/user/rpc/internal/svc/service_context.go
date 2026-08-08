@@ -12,6 +12,7 @@ import (
 
 type UsersModel interface {
 	Insert(ctx context.Context, data *model.Users) (sql.Result, error)
+	FindOneByPhone(ctx context.Context, phone string) (*model.Users, error)
 }
 
 type ServiceContext struct {

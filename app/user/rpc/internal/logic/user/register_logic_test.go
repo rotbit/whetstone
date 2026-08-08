@@ -17,11 +17,16 @@ import (
 )
 
 type fakeUsersModel struct {
-	insert func(ctx context.Context, data *model.Users) (sql.Result, error)
+	insert         func(ctx context.Context, data *model.Users) (sql.Result, error)
+	findOneByPhone func(ctx context.Context, phone string) (*model.Users, error)
 }
 
 func (m *fakeUsersModel) Insert(ctx context.Context, data *model.Users) (sql.Result, error) {
 	return m.insert(ctx, data)
+}
+
+func (m *fakeUsersModel) FindOneByPhone(ctx context.Context, phone string) (*model.Users, error) {
+	return m.findOneByPhone(ctx, phone)
 }
 
 type fakeResult struct {
@@ -44,6 +49,9 @@ func TestRegisterSuccess(t *testing.T) {
 			insert: func(_ context.Context, data *model.Users) (sql.Result, error) {
 				inserted = data
 				return fakeResult{id: 42}, nil
+			},
+			findOneByPhone: func(_ context.Context, _ string) (*model.Users, error) {
+				return inserted, nil
 			},
 		},
 	}
