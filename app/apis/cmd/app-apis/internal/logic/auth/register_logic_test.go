@@ -30,6 +30,14 @@ func (f *fakeUserRpc) Register(
 	return f.registerResp, f.registerErr
 }
 
+func (f *fakeUserRpc) Login(
+	context.Context,
+	*userclient.LoginRep,
+	...grpc.CallOption,
+) (*userclient.LoginResp, error) {
+	panic("unexpected Login call")
+}
+
 func (f *fakeUserRpc) GetUser(
 	context.Context,
 	*userclient.GetUserReq,

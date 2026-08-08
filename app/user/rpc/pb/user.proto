@@ -7,6 +7,8 @@ option go_package = "./pb";
 service User {
   rpc Register(RegisterReq) returns (RegisterResp);
 
+  rpc Login(LoginRep) returns (LoginResp);
+
   rpc GetUser(GetUserReq) returns (UserInfo);
 
   // 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
@@ -25,6 +27,17 @@ message RegisterResp {
   int64  user_id = 1;
   string phone   = 2;
   string plan    = 3;
+}
+
+message LoginRep {
+  string phone = 1;
+  string password = 2;
+}
+
+message LoginResp {
+  int64 user_id  = 1;
+  string phone = 2;
+  string plan = 3;
 }
 
 message GetUserReq {
