@@ -190,6 +190,8 @@ type LoginResp struct {
 	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Phone         string                 `protobuf:"bytes,2,opt,name=phone,proto3" json:"phone,omitempty"`
 	Plan          string                 `protobuf:"bytes,3,opt,name=plan,proto3" json:"plan,omitempty"`
+	AccessToken   string                 `protobuf:"bytes,4,opt,name=accessToken,proto3" json:"accessToken,omitempty"`
+	ExpireAt      int64                  `protobuf:"varint,5,opt,name=expireAt,proto3" json:"expireAt,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -243,6 +245,20 @@ func (x *LoginResp) GetPlan() string {
 		return x.Plan
 	}
 	return ""
+}
+
+func (x *LoginResp) GetAccessToken() string {
+	if x != nil {
+		return x.AccessToken
+	}
+	return ""
+}
+
+func (x *LoginResp) GetExpireAt() int64 {
+	if x != nil {
+		return x.ExpireAt
+	}
+	return 0
 }
 
 type GetUserReq struct {
@@ -580,11 +596,13 @@ const file_user_proto_rawDesc = "" +
 	"\x04plan\x18\x03 \x01(\tR\x04plan\"<\n" +
 	"\bLoginRep\x12\x14\n" +
 	"\x05phone\x18\x01 \x01(\tR\x05phone\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"N\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x8c\x01\n" +
 	"\tLoginResp\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x14\n" +
 	"\x05phone\x18\x02 \x01(\tR\x05phone\x12\x12\n" +
-	"\x04plan\x18\x03 \x01(\tR\x04plan\"%\n" +
+	"\x04plan\x18\x03 \x01(\tR\x04plan\x12 \n" +
+	"\vaccessToken\x18\x04 \x01(\tR\vaccessToken\x12\x1a\n" +
+	"\bexpireAt\x18\x05 \x01(\x03R\bexpireAt\"%\n" +
 	"\n" +
 	"GetUserReq\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\"g\n" +

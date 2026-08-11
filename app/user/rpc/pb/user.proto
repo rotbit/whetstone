@@ -38,6 +38,8 @@ message LoginResp {
   int64 user_id  = 1;
   string phone = 2;
   string plan = 3;
+  string accessToken =4;
+  int64  expireAt = 5;
 }
 
 message GetUserReq {

@@ -29,11 +29,26 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(req *types.RegisterReq) (*types.TokenResp, error) {
+
+	//网关层做快速校验，挡掉明显垃圾，节省rpc资源(针对输入)
+	if !phonePattern.MatchString(req.Phone) {
+		return nil, status.Error(codes.InvalidArgument, "手机号格式错误")
+	}
+	if len(req.Password) < 8 || len(req.Password) > 20 {
+		return nil, status.Error(codes.InvalidArgument, "密码长度必须在8-20之间")
+	}
+
+	//调用UserRpc.Register 注册用户
 	registered, err := l.svcCtx.UserRpc.Register(l.ctx, &userclient.RegisterReq{
 		Phone:    req.Phone,
 		Password: req.Password,
 	})
 	if err != nil {
+		// 区分超时和其他错误
+		if status.Code(err) == codes.DeadlineExceeded {
+			l.Errorf("登录rpc超时:%v", err)
+			return nil, status.Error(codes.Internal, "登录超时，请稍后重试")
+		}
 		return nil, err
 	}
 
