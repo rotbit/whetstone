@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/rotbit/whetstone/app/user/model"
 	"golang.org/x/crypto/bcrypt"
-	"github.com/golang-jwt/jwt/v4"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -62,12 +62,12 @@ func (l *LoginLogic) Login(in *pb.LoginRep) (*pb.LoginResp, error) {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		return nil, status.Error(codes.Unauthenticated, "手机号或密码错误")
 	}
-	
+
 	// 签发 JWT access token
 	now := time.Now().Unix()
-	expireAt := now + l.svcCtx.Config.Auth.AccessExpire
+	expireAt := now + l.svcCtx.Config.TokenAuth.AccessExpire
 	accessToken, err := createAccessToken(
-		l.svcCtx.Config.Auth.AccessSecret,
+		l.svcCtx.Config.TokenAuth.AccessSecret,
 		now,
 		expireAt,
 		int64(user.Id),
@@ -76,12 +76,12 @@ func (l *LoginLogic) Login(in *pb.LoginRep) (*pb.LoginResp, error) {
 		l.Errorf("create access token failed: %v", err)
 		return nil, status.Error(codes.Internal, "登录失败")
 	}
-	
+
 	//登录成功
 	return &pb.LoginResp{
-		UserId: int64(user.Id),
-		Phone:  user.Phone,
-		Plan:   user.Plan,
+		UserId:      int64(user.Id),
+		Phone:       user.Phone,
+		Plan:        user.Plan,
 		AccessToken: accessToken,
 		ExpireAt:    expireAt,
 	}, nil

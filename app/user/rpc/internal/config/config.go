@@ -7,7 +7,7 @@ type Config struct {
 	Mysql struct {
 		DataSource string
 	}
-	Auth struct {
+	TokenAuth struct {
 		AccessSecret string
 		AccessExpire int64
 	}
