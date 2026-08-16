@@ -69,18 +69,18 @@ type RegisterReq struct {
 }
 
 type ResumeResp struct {
-	ResumeId   int64  `json:"resumeId"`
-	ParsedJson string `json:"parsedJson"` // 结构化简历（项目/技能/经历）
-	ParseState string `json:"parseState"`
+	ResumeId   int64  `json:"resumeId"`   // 当前用户最后上传的简历 ID
+	ParsedJson string `json:"parsedJson"` // 结构化简历；尚未解析时为空字符串
+	ParseState string `json:"parseState"` // parsing | done | failed
 }
 
 type SaveJdReq struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	Title   string `json:"title"`   // 1～128 个 Unicode 字符
+	Content string `json:"content"` // UTF-8 编码后不超过 60 KiB
 }
 
 type SaveJdResp struct {
-	JdId int64 `json:"jdId"`
+	JdId int64 `json:"jdId"` // MySQL jds 表主键
 }
 
 type SessionItem struct {
@@ -97,7 +97,7 @@ type TokenResp struct {
 }
 
 type UploadResumeResp struct {
-	ResumeId   int64  `json:"resumeId"`
+	ResumeId   int64  `json:"resumeId"`   // MySQL resumes 表主键
 	ParseState string `json:"parseState"` // parsing | done | failed
 }
 

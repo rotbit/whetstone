@@ -35,11 +35,11 @@ type (
 		Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 		Login(ctx context.Context, in *LoginRep, opts ...grpc.CallOption) (*LoginResp, error)
 		GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*UserInfo, error)
-		// 保存已上传到 OSS 的简历元数据；oss_url 用作幂等键。
+		// 保存 app-apis 已上传成功的 OSS 简历元数据；oss_url 用作跨重试幂等键。
 		SaveResume(ctx context.Context, in *SaveResumeReq, opts ...grpc.CallOption) (*SaveResumeResp, error)
-		// 查询用户最近上传的一份简历。
+		// 查询用户最近上传的一份简历；未上传时返回 gRPC NotFound。
 		GetLatestResume(ctx context.Context, in *GetLatestResumeReq, opts ...grpc.CallOption) (*ResumeInfo, error)
-		// 保存一份目标岗位 JD。
+		// 保存一份目标岗位 JD，并返回数据库生成的主键。
 		SaveJd(ctx context.Context, in *SaveJdReq, opts ...grpc.CallOption) (*SaveJdResp, error)
 		// 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
 		DeductCredit(ctx context.Context, in *DeductCreditReq, opts ...grpc.CallOption) (*DeductCreditResp, error)
@@ -73,19 +73,19 @@ func (m *defaultUser) GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.
 	return client.GetUser(ctx, in, opts...)
 }
 
-// 保存已上传到 OSS 的简历元数据；oss_url 用作幂等键。
+// 保存 app-apis 已上传成功的 OSS 简历元数据；oss_url 用作跨重试幂等键。
 func (m *defaultUser) SaveResume(ctx context.Context, in *SaveResumeReq, opts ...grpc.CallOption) (*SaveResumeResp, error) {
 	client := pb.NewUserClient(m.cli.Conn())
 	return client.SaveResume(ctx, in, opts...)
 }
 
-// 查询用户最近上传的一份简历。
+// 查询用户最近上传的一份简历；未上传时返回 gRPC NotFound。
 func (m *defaultUser) GetLatestResume(ctx context.Context, in *GetLatestResumeReq, opts ...grpc.CallOption) (*ResumeInfo, error) {
 	client := pb.NewUserClient(m.cli.Conn())
 	return client.GetLatestResume(ctx, in, opts...)
 }
 
-// 保存一份目标岗位 JD。
+// 保存一份目标岗位 JD，并返回数据库生成的主键。
 func (m *defaultUser) SaveJd(ctx context.Context, in *SaveJdReq, opts ...grpc.CallOption) (*SaveJdResp, error) {
 	client := pb.NewUserClient(m.cli.Conn())
 	return client.SaveJd(ctx, in, opts...)

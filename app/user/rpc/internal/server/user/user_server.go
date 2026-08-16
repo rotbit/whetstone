@@ -38,19 +38,19 @@ func (s *UserServer) GetUser(ctx context.Context, in *pb.GetUserReq) (*pb.UserIn
 	return l.GetUser(in)
 }
 
-// 保存已上传到 OSS 的简历元数据；oss_url 用作幂等键。
+// 保存 app-apis 已上传成功的 OSS 简历元数据；oss_url 用作跨重试幂等键。
 func (s *UserServer) SaveResume(ctx context.Context, in *pb.SaveResumeReq) (*pb.SaveResumeResp, error) {
 	l := userlogic.NewSaveResumeLogic(ctx, s.svcCtx)
 	return l.SaveResume(in)
 }
 
-// 查询用户最近上传的一份简历。
+// 查询用户最近上传的一份简历；未上传时返回 gRPC NotFound。
 func (s *UserServer) GetLatestResume(ctx context.Context, in *pb.GetLatestResumeReq) (*pb.ResumeInfo, error) {
 	l := userlogic.NewGetLatestResumeLogic(ctx, s.svcCtx)
 	return l.GetLatestResume(in)
 }
 
-// 保存一份目标岗位 JD。
+// 保存一份目标岗位 JD，并返回数据库生成的主键。
 func (s *UserServer) SaveJd(ctx context.Context, in *pb.SaveJdReq) (*pb.SaveJdResp, error) {
 	l := userlogic.NewSaveJdLogic(ctx, s.svcCtx)
 	return l.SaveJd(in)

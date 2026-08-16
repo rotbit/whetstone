@@ -30,20 +30,20 @@ type (
 		Credits int64  `json:"credits"`
 	}
 	UploadResumeResp {
-		ResumeId   int64  `json:"resumeId"`
+		ResumeId   int64  `json:"resumeId"` // MySQL resumes 表主键
 		ParseState string `json:"parseState"` // parsing | done | failed
 	}
 	ResumeResp {
-		ResumeId   int64  `json:"resumeId"`
-		ParsedJson string `json:"parsedJson"` // 结构化简历（项目/技能/经历）
-		ParseState string `json:"parseState"`
+		ResumeId   int64  `json:"resumeId"` // 当前用户最后上传的简历 ID
+		ParsedJson string `json:"parsedJson"` // 结构化简历；尚未解析时为空字符串
+		ParseState string `json:"parseState"` // parsing | done | failed
 	}
 	SaveJdReq {
-		Title   string `json:"title"`
-		Content string `json:"content"`
+		Title   string `json:"title"` // 1～128 个 Unicode 字符
+		Content string `json:"content"` // UTF-8 编码后不超过 60 KiB
 	}
 	SaveJdResp {
-		JdId int64 `json:"jdId"`
+		JdId int64 `json:"jdId"` // MySQL jds 表主键
 	}
 	CreateOrderReq {
 		Sku string `json:"sku"` // pack_3 | monthly
@@ -125,13 +125,16 @@ service app-api {
 	@handler userInfo
 	get /user/info returns (UserInfoResp)
 
-	// multipart/form-data 文件上传，handler 内自行读取 r.MultipartForm。
+	// multipart/form-data 文件上传；字段名固定为 file，最大 10 MiB，仅接受 PDF。
+	// handler 自行读取 r.MultipartForm，上传 OSS 成功后再调用 user-rpc 保存稳定 URL。
 	@handler uploadResume
 	post /resume/upload returns (UploadResumeResp)
 
+	// 返回当前用户最近上传的一份简历；没有记录时返回 404。
 	@handler getResume
 	get /resume returns (ResumeResp)
 
+	// 保存当前用户的目标岗位描述，标题和正文会先去除首尾空白。
 	@handler saveJd
 	post /jd (SaveJdReq) returns (SaveJdResp)
 
@@ -163,3 +166,4 @@ service app-api {
 	@handler websocket
 	get /ws
 }
+

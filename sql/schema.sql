@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS resumes (
     parse_state VARCHAR(20) NOT NULL DEFAULT 'parsing', -- parsing | done | failed
     created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     KEY idx_user (user_id),
+    -- API 在 RPC 结果不确定时会重试，稳定 OSS URL 的唯一索引保证不会重复创建记录。
     UNIQUE KEY uk_oss_url (oss_url)
 ) ENGINE=InnoDB;
 

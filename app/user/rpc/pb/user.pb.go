@@ -390,12 +390,15 @@ func (x *UserInfo) GetCredits() int64 {
 	return 0
 }
 
+// SaveResumeReq 由 app-apis 在 OSS 上传成功后构造，不直接接受公网客户端调用。
 type SaveResumeReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// JWT 中解析出的当前用户 ID。
+	UserId int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// 不带临时签名参数的稳定 HTTPS OSS URL。
 	OssUrl string `protobuf:"bytes,2,opt,name=oss_url,json=ossUrl,proto3" json:"oss_url,omitempty"`
 }
 
@@ -445,12 +448,15 @@ func (x *SaveResumeReq) GetOssUrl() string {
 	return ""
 }
 
+// SaveResumeResp 返回新建或幂等命中的同一份简历记录。
 type SaveResumeResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ResumeId   int64  `protobuf:"varint,1,opt,name=resume_id,json=resumeId,proto3" json:"resume_id,omitempty"`
+	// MySQL resumes 表主键。
+	ResumeId int64 `protobuf:"varint,1,opt,name=resume_id,json=resumeId,proto3" json:"resume_id,omitempty"`
+	// parsing、done 或 failed。
 	ParseState string `protobuf:"bytes,2,opt,name=parse_state,json=parseState,proto3" json:"parse_state,omitempty"`
 }
 
@@ -500,6 +506,7 @@ func (x *SaveResumeResp) GetParseState() string {
 	return ""
 }
 
+// GetLatestResumeReq 指定需要查询简历的用户。
 type GetLatestResumeReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -547,13 +554,17 @@ func (x *GetLatestResumeReq) GetUserId() int64 {
 	return 0
 }
 
+// ResumeInfo 是 API 返回简历状态所需的信息，不包含内部 OSS URL。
 type ResumeInfo struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ResumeId   int64  `protobuf:"varint,1,opt,name=resume_id,json=resumeId,proto3" json:"resume_id,omitempty"`
+	// MySQL resumes 表主键。
+	ResumeId int64 `protobuf:"varint,1,opt,name=resume_id,json=resumeId,proto3" json:"resume_id,omitempty"`
+	// 结构化解析结果；尚未解析时为空字符串。
 	ParsedJson string `protobuf:"bytes,2,opt,name=parsed_json,json=parsedJson,proto3" json:"parsed_json,omitempty"`
+	// parsing、done 或 failed。
 	ParseState string `protobuf:"bytes,3,opt,name=parse_state,json=parseState,proto3" json:"parse_state,omitempty"`
 }
 
@@ -610,13 +621,17 @@ func (x *ResumeInfo) GetParseState() string {
 	return ""
 }
 
+// SaveJdReq 保存用户输入并完成首尾空白清理后的岗位描述。
 type SaveJdReq struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId  int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Title   string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	// JWT 中解析出的当前用户 ID。
+	UserId int64 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// 最长 128 个 Unicode 字符。
+	Title string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	// UTF-8 编码后不能超过 60 KiB。
 	Content string `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
 }
 
@@ -673,6 +688,7 @@ func (x *SaveJdReq) GetContent() string {
 	return ""
 }
 
+// SaveJdResp 返回新建 JD 的数据库主键。
 type SaveJdResp struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

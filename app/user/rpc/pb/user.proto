@@ -11,13 +11,13 @@ service User {
 
   rpc GetUser(GetUserReq) returns (UserInfo);
 
-  // 保存已上传到 OSS 的简历元数据；oss_url 用作幂等键。
+  // 保存 app-apis 已上传成功的 OSS 简历元数据；oss_url 用作跨重试幂等键。
   rpc SaveResume(SaveResumeReq) returns (SaveResumeResp);
 
-  // 查询用户最近上传的一份简历。
+  // 查询用户最近上传的一份简历；未上传时返回 gRPC NotFound。
   rpc GetLatestResume(GetLatestResumeReq) returns (ResumeInfo);
 
-  // 保存一份目标岗位 JD。
+  // 保存一份目标岗位 JD，并返回数据库生成的主键。
   rpc SaveJd(SaveJdReq) returns (SaveJdResp);
 
   // 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
@@ -62,32 +62,48 @@ message UserInfo {
   int64  credits = 4;
 }
 
+// SaveResumeReq 由 app-apis 在 OSS 上传成功后构造，不直接接受公网客户端调用。
 message SaveResumeReq {
+  // JWT 中解析出的当前用户 ID。
   int64  user_id = 1;
+  // 不带临时签名参数的稳定 HTTPS OSS URL。
   string oss_url = 2;
 }
 
+// SaveResumeResp 返回新建或幂等命中的同一份简历记录。
 message SaveResumeResp {
+  // MySQL resumes 表主键。
   int64  resume_id = 1;
+  // parsing、done 或 failed。
   string parse_state = 2;
 }
 
+// GetLatestResumeReq 指定需要查询简历的用户。
 message GetLatestResumeReq {
   int64 user_id = 1;
 }
 
+// ResumeInfo 是 API 返回简历状态所需的信息，不包含内部 OSS URL。
 message ResumeInfo {
+  // MySQL resumes 表主键。
   int64  resume_id = 1;
+  // 结构化解析结果；尚未解析时为空字符串。
   string parsed_json = 2;
+  // parsing、done 或 failed。
   string parse_state = 3;
 }
 
+// SaveJdReq 保存用户输入并完成首尾空白清理后的岗位描述。
 message SaveJdReq {
+  // JWT 中解析出的当前用户 ID。
   int64  user_id = 1;
+  // 最长 128 个 Unicode 字符。
   string title = 2;
+  // UTF-8 编码后不能超过 60 KiB。
   string content = 3;
 }
 
+// SaveJdResp 返回新建 JD 的数据库主键。
 message SaveJdResp {
   int64 jd_id = 1;
 }

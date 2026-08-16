@@ -5,7 +5,7 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
-// OSSConfig 对应 app-api
+// OSSConfig 对应 app-apis.yaml 中的 OSS 配置段，由 go-zero 在启动时从环境变量展开。
 type OSSConfig struct {
 	Region          string // OSS 地域。
 	Endpoint        string // SDK 上传使用的 HTTPS Endpoint。
@@ -15,7 +15,7 @@ type OSSConfig struct {
 	ObjectURLPrefix string // 数据库保存的稳定对象 URL 前缀。
 }
 
-LPrefix string // 数据
+// Config 汇总 app-apis 的 HTTP、鉴权、RPC、OSS 和 WebSocket 配置。
 type Config struct {
 	rest.RestConf
 	Auth struct {

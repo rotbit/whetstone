@@ -13,7 +13,7 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
-// ServiceContext 保存 app-api
+// ServiceContext 保存 app-apis 进程内可复用的 RPC 客户端、对象存储客户端和连接管理器。
 type ServiceContext struct {
 	Config        config.Config
 	UserRpc       userclient.User
@@ -23,14 +23,10 @@ type ServiceContext struct {
 	WsConnections *conn.Manager
 }
 
-	WsConnections *conn.Manager
-}
-
-// NewServiceContext 在服务启动阶段一次性初始化所有外部依赖。
 // NewServiceContext 在服务启动阶段一次性初始化所有外部依赖。
 // OSS 配置错误会通过 logx.Must 立即终止启动，避免服务看似健康但上传接口始终失败。
-func 
 func NewServiceContext(c config.Config) *ServiceContext {
+	// 注册请求含明文密码，禁止 zRPC 客户端日志记录该方法的请求正文。
 	zrpc.DontLogClientContentForMethod(userpb.User_Register_FullMethodName)
 	objectStorage, err := storage.NewOSSStorage(storage.OSSConfig{
 		Region:          c.OSS.Region,
