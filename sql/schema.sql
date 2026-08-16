@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS resumes (
     parsed_json JSON NULL,                              -- LLM 结构化：项目/技能/经历
     parse_state VARCHAR(20) NOT NULL DEFAULT 'parsing', -- parsing | done | failed
     created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    KEY idx_user (user_id)
+    KEY idx_user (user_id),
+    UNIQUE KEY uk_oss_url (oss_url)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS jds (

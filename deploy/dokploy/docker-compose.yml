@@ -19,6 +19,12 @@ services:
       USER_RPC_ENDPOINT: user-rpc:9001
       INTERVIEW_RPC_ENDPOINT: interview-rpc:9002
       QUESTION_RPC_ENDPOINT: question-rpc:9003
+      OSS_REGION: ${OSS_REGION:?OSS_REGION is required}
+      OSS_ENDPOINT: ${OSS_ENDPOINT:?OSS_ENDPOINT is required}
+      OSS_BUCKET: ${OSS_BUCKET:?OSS_BUCKET is required}
+      OSS_ACCESS_KEY_ID: ${OSS_ACCESS_KEY_ID:?OSS_ACCESS_KEY_ID is required}
+      OSS_ACCESS_KEY_SECRET: ${OSS_ACCESS_KEY_SECRET:?OSS_ACCESS_KEY_SECRET is required}
+      OSS_OBJECT_URL_PREFIX: ${OSS_OBJECT_URL_PREFIX:?OSS_OBJECT_URL_PREFIX is required}
     depends_on:
       - user-rpc
       - interview-rpc

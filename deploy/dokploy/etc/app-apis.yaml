@@ -30,5 +30,13 @@ QuestionRpc:
   Endpoints:
     - ${QUESTION_RPC_ENDPOINT}
 
+OSS:
+  Region: "${OSS_REGION}"
+  Endpoint: "${OSS_ENDPOINT}"
+  Bucket: "${OSS_BUCKET}"
+  AccessKeyID: "${OSS_ACCESS_KEY_ID}"
+  AccessKeySecret: "${OSS_ACCESS_KEY_SECRET}"
+  ObjectURLPrefix: "${OSS_OBJECT_URL_PREFIX}"
+
 Websocket:
   PublicUrl: "${WEBSOCKET_PUBLIC_URL}"

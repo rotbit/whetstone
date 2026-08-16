@@ -3,13 +3,22 @@ syntax = "proto3";
 package user;
 option go_package = "./pb";
 
-// 用户域内部服务：用户信息 / 次数幂等扣减
+// 用户域内部服务：用户信息 / 简历 / JD / 次数幂等扣减
 service User {
   rpc Register(RegisterReq) returns (RegisterResp);
 
   rpc Login(LoginRep) returns (LoginResp);
 
   rpc GetUser(GetUserReq) returns (UserInfo);
+
+  // 保存已上传到 OSS 的简历元数据；oss_url 用作幂等键。
+  rpc SaveResume(SaveResumeReq) returns (SaveResumeResp);
+
+  // 查询用户最近上传的一份简历。
+  rpc GetLatestResume(GetLatestResumeReq) returns (ResumeInfo);
+
+  // 保存一份目标岗位 JD。
+  rpc SaveJd(SaveJdReq) returns (SaveJdResp);
 
   // 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
   rpc DeductCredit(DeductCreditReq) returns (DeductCreditResp);
@@ -51,6 +60,36 @@ message UserInfo {
   string phone   = 2;
   string plan    = 3;
   int64  credits = 4;
+}
+
+message SaveResumeReq {
+  int64  user_id = 1;
+  string oss_url = 2;
+}
+
+message SaveResumeResp {
+  int64  resume_id = 1;
+  string parse_state = 2;
+}
+
+message GetLatestResumeReq {
+  int64 user_id = 1;
+}
+
+message ResumeInfo {
+  int64  resume_id = 1;
+  string parsed_json = 2;
+  string parse_state = 3;
+}
+
+message SaveJdReq {
+  int64  user_id = 1;
+  string title = 2;
+  string content = 3;
+}
+
+message SaveJdResp {
+  int64 jd_id = 1;
 }
 
 message DeductCreditReq {

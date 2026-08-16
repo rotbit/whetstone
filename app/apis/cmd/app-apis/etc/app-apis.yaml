@@ -23,5 +23,13 @@ QuestionRpc:
   Endpoints:
     - 127.0.0.1:9003
 
+OSS:
+  Region: "${OSS_REGION}"
+  Endpoint: "${OSS_ENDPOINT}"
+  Bucket: "${OSS_BUCKET}"
+  AccessKeyID: "${OSS_ACCESS_KEY_ID}"
+  AccessKeySecret: "${OSS_ACCESS_KEY_SECRET}"
+  ObjectURLPrefix: "${OSS_OBJECT_URL_PREFIX}"
+
 Websocket:
   PublicUrl: ws://127.0.0.1:8888/ws

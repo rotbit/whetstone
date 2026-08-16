@@ -46,6 +46,30 @@ func (f *fakeUserRpc) GetUser(
 	panic("unexpected GetUser call")
 }
 
+func (f *fakeUserRpc) SaveResume(
+	context.Context,
+	*userclient.SaveResumeReq,
+	...grpc.CallOption,
+) (*userclient.SaveResumeResp, error) {
+	panic("unexpected SaveResume call")
+}
+
+func (f *fakeUserRpc) GetLatestResume(
+	context.Context,
+	*userclient.GetLatestResumeReq,
+	...grpc.CallOption,
+) (*userclient.ResumeInfo, error) {
+	panic("unexpected GetLatestResume call")
+}
+
+func (f *fakeUserRpc) SaveJd(
+	context.Context,
+	*userclient.SaveJdReq,
+	...grpc.CallOption,
+) (*userclient.SaveJdResp, error) {
+	panic("unexpected SaveJd call")
+}
+
 func (f *fakeUserRpc) DeductCredit(
 	context.Context,
 	*userclient.DeductCreditReq,
@@ -97,7 +121,10 @@ func TestRegisterPropagatesRpcError(t *testing.T) {
 	fakeRpc := &fakeUserRpc{registerErr: status.Error(codes.AlreadyExists, "手机号已注册")}
 	svcCtx := &svc.ServiceContext{UserRpc: fakeRpc}
 
-	_, err := NewRegisterLogic(context.Background(), svcCtx).Register(&types.RegisterReq{})
+	_, err := NewRegisterLogic(context.Background(), svcCtx).Register(&types.RegisterReq{
+		Phone:    "13800138000",
+		Password: "password123",
+	})
 	if status.Code(err) != codes.AlreadyExists {
 		t.Fatalf("Register() code = %v, want %v", status.Code(err), codes.AlreadyExists)
 	}

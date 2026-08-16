@@ -2,30 +2,51 @@ package svc
 
 import (
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/config"
+	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/storage"
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/ws/conn"
 	interviewclient "github.com/rotbit/whetstone/app/interview/rpc/client/interview"
 	questionclient "github.com/rotbit/whetstone/app/question/rpc/client/question"
 	userclient "github.com/rotbit/whetstone/app/user/rpc/client/user"
 	userpb "github.com/rotbit/whetstone/app/user/rpc/pb"
 
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
+// ServiceContext 保存 app-api
 type ServiceContext struct {
 	Config        config.Config
 	UserRpc       userclient.User
 	InterviewRpc  interviewclient.Interview
 	QuestionRpc   questionclient.Question
+	ObjectStorage storage.ObjectStorage
 	WsConnections *conn.Manager
 }
 
+	WsConnections *conn.Manager
+}
+
+// NewServiceContext 在服务启动阶段一次性初始化所有外部依赖。
+// NewServiceContext 在服务启动阶段一次性初始化所有外部依赖。
+// OSS 配置错误会通过 logx.Must 立即终止启动，避免服务看似健康但上传接口始终失败。
+func 
 func NewServiceContext(c config.Config) *ServiceContext {
 	zrpc.DontLogClientContentForMethod(userpb.User_Register_FullMethodName)
+	objectStorage, err := storage.NewOSSStorage(storage.OSSConfig{
+		Region:          c.OSS.Region,
+		Endpoint:        c.OSS.Endpoint,
+		Bucket:          c.OSS.Bucket,
+		AccessKeyID:     c.OSS.AccessKeyID,
+		AccessKeySecret: c.OSS.AccessKeySecret,
+		ObjectURLPrefix: c.OSS.ObjectURLPrefix,
+	})
+	logx.Must(err)
 	return &ServiceContext{
 		Config:        c,
 		UserRpc:       userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
 		InterviewRpc:  interviewclient.NewInterview(zrpc.MustNewClient(c.InterviewRpc)),
 		QuestionRpc:   questionclient.NewQuestion(zrpc.MustNewClient(c.QuestionRpc)),
+		ObjectStorage: objectStorage,
 		WsConnections: conn.NewManager(),
 	}
 }
