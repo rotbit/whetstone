@@ -33,12 +33,13 @@ func UploadResumeHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			defer r.MultipartForm.RemoveAll()
 		}
 		if parserErr != nil {
-			
-			writeMultipartError(r, w, parserErr)
-		}
-		if r.MultipartForm == nil {
-			httpx.ErrorCtx(r.Context(), w, status.Error(codes.InvalidArgument, "缺少 PDF 文件"))
-		}
+		writeMultipartError(r, w, parserErr)
+		return
+	}
+	if r.MultipartForm == nil {
+		httpx.ErrorCtx(r.Context(), w, status.Error(codes.InvalidArgument, "缺少 PDF 文件"))
+		return
+	}
 		// 接口约定文件字段名固定为 file,同名多文件只处理第一份。	
 		fileHeaders := r.MultipartForm.File["file"] 	
 		if len(fileHeaders) == 0 {
