@@ -12,9 +12,9 @@ var ErrNoUserID = errors.New("用户未登录")
 // userIDFromContext 从 Context 中提取经过 JWT 认证的用户 ID。
 // 如果缺失或类型不正确，返回 ErrNoUserID，由上层决定如何处理（如返回 401）。
 func userIDFromContext(ctx context.Context) (int64, error) {
-	// 1. 从上下文中取出键为 "user_id" 的值。
-	//    这个值由 JWT 中间件在验证 Token 后注入。
-	v := ctx.Value("user_id")
+	// 1. 从上下文中取出键为 "uid" 的值。
+	//    这个值由 JWT 中间件在验证 Token 后注入，key 名与 user-rpc 签发 claim 时的字段名一致。
+	v := ctx.Value("uid")
 
 	// 2. 如果值为 nil，说明上下文中没有用户信息（可能是未登录或中间件未生效）。
 	if v == nil {
