@@ -22,6 +22,7 @@ const (
 	User_Register_FullMethodName     = "/user.User/Register"
 	User_Login_FullMethodName        = "/user.User/Login"
 	User_GetUser_FullMethodName      = "/user.User/GetUser"
+	User_SaveResume_FullMethodName   = "/user.User/SaveResume"
 	User_DeductCredit_FullMethodName = "/user.User/DeductCredit"
 	User_RefundCredit_FullMethodName = "/user.User/RefundCredit"
 )
@@ -35,6 +36,8 @@ type UserClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 	Login(ctx context.Context, in *LoginRep, opts ...grpc.CallOption) (*LoginResp, error)
 	GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.CallOption) (*UserInfo, error)
+	// 保存 app-apis 已上传成功的 OSS 简历元数据；oss_url 用作跨重试幂等键
+	SaveResume(ctx context.Context, in *SaveResumeReq, opts ...grpc.CallOption) (*SaveResumeResp, error)
 	// 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
 	DeductCredit(ctx context.Context, in *DeductCreditReq, opts ...grpc.CallOption) (*DeductCreditResp, error)
 	// 面试异常中断时回补次数（同样以 session_id 幂等）
@@ -79,6 +82,16 @@ func (c *userClient) GetUser(ctx context.Context, in *GetUserReq, opts ...grpc.C
 	return out, nil
 }
 
+func (c *userClient) SaveResume(ctx context.Context, in *SaveResumeReq, opts ...grpc.CallOption) (*SaveResumeResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SaveResumeResp)
+	err := c.cc.Invoke(ctx, User_SaveResume_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userClient) DeductCredit(ctx context.Context, in *DeductCreditReq, opts ...grpc.CallOption) (*DeductCreditResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeductCreditResp)
@@ -108,6 +121,8 @@ type UserServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	Login(context.Context, *LoginRep) (*LoginResp, error)
 	GetUser(context.Context, *GetUserReq) (*UserInfo, error)
+	// 保存 app-apis 已上传成功的 OSS 简历元数据；oss_url 用作跨重试幂等键
+	SaveResume(context.Context, *SaveResumeReq) (*SaveResumeResp, error)
 	// 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
 	DeductCredit(context.Context, *DeductCreditReq) (*DeductCreditResp, error)
 	// 面试异常中断时回补次数（同样以 session_id 幂等）
@@ -130,6 +145,9 @@ func (UnimplementedUserServer) Login(context.Context, *LoginRep) (*LoginResp, er
 }
 func (UnimplementedUserServer) GetUser(context.Context, *GetUserReq) (*UserInfo, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedUserServer) SaveResume(context.Context, *SaveResumeReq) (*SaveResumeResp, error) {
+	return nil, status.Error(codes.Unimplemented, "method SaveResume not implemented")
 }
 func (UnimplementedUserServer) DeductCredit(context.Context, *DeductCreditReq) (*DeductCreditResp, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeductCredit not implemented")
@@ -212,6 +230,24 @@ func _User_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_SaveResume_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SaveResumeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).SaveResume(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_SaveResume_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).SaveResume(ctx, req.(*SaveResumeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _User_DeductCredit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeductCreditReq)
 	if err := dec(in); err != nil {
@@ -266,6 +302,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUser",
 			Handler:    _User_GetUser_Handler,
+		},
+		{
+			MethodName: "SaveResume",
+			Handler:    _User_SaveResume_Handler,
 		},
 		{
 			MethodName: "DeductCredit",

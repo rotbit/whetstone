@@ -25,3 +25,12 @@ QuestionRpc:
 
 Websocket:
   PublicUrl: ws://127.0.0.1:8888/ws
+  
+# app-apis 直接上传简历到阿里云 OSS；真实凭证必须通过环境变量注入。
+OSS:
+  Region: "${OSS_REGION}"                       # 例如 cn-hangzhou
+  Endpoint: "${OSS_ENDPOINT}"                   # 必须是 HTTPS Endpoint
+  Bucket: "${OSS_BUCKET}"                       # 保存简历的私有 Bucket
+  AccessKeyID: "${OSS_ACCESS_KEY_ID}"           # 仅授予目标 Bucket 最小权限
+  AccessKeySecret: "${OSS_ACCESS_KEY_SECRET}"   # 不得写入仓库或日志
+  ObjectURLPrefix: "${OSS_OBJECT_URL_PREFIX}"   # 不带临时签名的稳定 URL 前缀

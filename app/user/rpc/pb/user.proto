@@ -11,6 +11,10 @@ service User {
 
   rpc GetUser(GetUserReq) returns (UserInfo);
 
+  // 保存 app-apis 已上传成功的 OSS 简历元数据；oss_url 用作跨重试幂等键
+  rpc SaveResume(SaveResumeReq) returns (SaveResumeResp);
+
+
   // 面试开始前扣减次数；session_id 作幂等键，重复调用不重复扣
   rpc DeductCredit(DeductCreditReq) returns (DeductCreditResp);
 
@@ -51,6 +55,18 @@ message UserInfo {
   string phone   = 2;
   string plan    = 3;
   int64  credits = 4;
+}
+
+// SaveResumeReq 由 app-apis 在 OSS 上传成功后构造，不直接接受公网客户端调用
+message SaveResumeReq {
+  int64 user_id = 1;
+  string oss_url = 2;
+}
+
+//返回新建或幂等命中的同一份简历记录
+message SaveResumeResp {
+  int64 resume_id = 1;      //resume表主键
+  string parse_state = 2;   //parsing\done\failed
 }
 
 message DeductCreditReq {
