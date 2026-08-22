@@ -9,10 +9,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/svc"
 	"github.com/rotbit/whetstone/app/apis/cmd/app-apis/internal/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	userclient "github.com/rotbit/whetstone/app/user/rpc/client/user"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -50,30 +50,30 @@ func (l *UploadResumeLogic) UploadResume(file io.ReadSeeker, size int64) (resp *
 
 	// 生成对象键，不使用用户文件名， 从源头避免路径穿越 和 同名覆盖。 uuid.NewString() 生成一个随机的UUID 字符串
 	objectKey := newResumeObjectKey(userID, time.Now().UTC(), uuid.NewString())
-	requestID, err := l.svcCtx.ObjectStorage.Put(l.ctx, objectKey,file, size, pdfContentType)
+	requestID, err := l.svcCtx.ObjectStorage.Put(l.ctx, objectKey, file, size, pdfContentType)
 	if err != nil {
 		l.Errorf("upload resume to OSS failed, key:%s err=%v", objectKey, err)
-		return  nil, status.Error(codes.Unavailable, "上传简历失败")
+		return nil, status.Error(codes.Unavailable, "上传简历失败")
 	}
 	l.Infof("resume uploaded to OSS: key=%s, requestID=%s", objectKey, requestID)
 
 	// 数据库只保存不带签名参数的稳定 URL，临时下载签名应在真正读取文件时按需生成
 	ossURL := l.svcCtx.ObjectStorage.URL(objectKey)
-	rpcResp, err := l.saveResumeRecord(userID, ossURL) 
+	rpcResp, err := l.saveResumeRecord(userID, ossURL)
 	if err != nil {
 		// InvalidArgument/AlreadyExists 能确定没有为本次对象新增记录，可以安全删除文件
 		// 其他错误可能发生在数据库提交之后、响应返回之前，此时保留对象可避免数据库悬空引用
 		if isRetryableError(err) { // oss 未上传成功
-			l.Errorf("save resume result is uncertain: key=%s, err=%v",objectKey, err)
+			l.Errorf("save resume result is uncertain: key=%s, err=%v", objectKey, err)
 		} else {
 			l.deleteUploadedResume(objectKey)
 		}
 		return nil, normalizeResumeRPCError(err)
 	}
-	return &types.UploadResumeResp {
-		ResumeId: rpcResp.ResumeId,
+	return &types.UploadResumeResp{
+		ResumeId:   rpcResp.ResumeId,
 		ParseState: rpcResp.ParseState,
-	},nil
+	}, nil
 }
 
 // validateResumePDF 校验简历文件大小 和PDF 固定头，并在校验后把读取位置恢复到文件开头
@@ -83,9 +83,9 @@ func validateResumePDF(file io.ReadSeeker, size int64) error {
 		return status.Error(codes.InvalidArgument, "PDF 文件不能为空且不能超过10 MiB")
 	}
 
-	// 合法 PDF 文件以“PDF-”开头: 读取不足 5 字节同样视为格式错误。
+	// 合法 PDF 文件以“%PDF-”开头: 读取不足 5 字节同样视为格式错误。
 	header := make([]byte, 5)
-	if _, err := io.ReadFull(file, header); err != nil || string(header) != "PDF-" {
+	if _, err := io.ReadFull(file, header); err != nil || string(header) != "%PDF-" {
 		return status.Error(codes.InvalidArgument, "只支持有效的 PDF 文件")
 	}
 	// OSS SDK 将从当前位置读取，因此校验完后必须回到 0 偏移
@@ -106,6 +106,7 @@ func newResumeObjectKey(userID int64, now time.Time, objectID string) string {
 //   - 参数错误(InvalidArgument) 或 简历归属冲突(AlreadyExists)：重试无意义，直接返回
 //   - 其他错误(Unavailable/Deadline/Internal...)：结果不确定，但 user-rpc 用 oss_url
 //     作幂等键(先查后插 + 唯一索引兜底)，所以可以安全地重试一次拿稳态结果
+//
 // 重试前还检查 ctx.Err()，避免客户端已断开后还白白占用 RPC 资源。
 func (l *UploadResumeLogic) saveResumeRecord(userID int64, ossURL string) (*userclient.SaveResumeResp, error) {
 	req := &userclient.SaveResumeReq{UserId: userID, OssUrl: ossURL}
@@ -130,13 +131,13 @@ func isRetryableError(err error) bool {
 }
 
 // deleteUploadedResume 补偿删除尚未成功落库的 OSS 对象。
-//删除功能 这使用独立的短超时上下文，确保原来请求取消后仍有机会完成清理，同时避免无限阻塞
+// 删除功能 这使用独立的短超时上下文，确保原来请求取消后仍有机会完成清理，同时避免无限阻塞
 func (l *UploadResumeLogic) deleteUploadedResume(objectKey string) {
-	ctx, cancel := context.WithTimeout(context.Background(),5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	requestID, err := l.svcCtx.ObjectStorage.Delete(ctx,objectKey)
+	requestID, err := l.svcCtx.ObjectStorage.Delete(ctx, objectKey)
 	if err != nil {
-		l.Errorf("delete uploaded resume failed: key=%s, err=%v",objectKey, err)
+		l.Errorf("delete uploaded resume failed: key=%s, err=%v", objectKey, err)
 		return
 	}
 	l.Infof("uploaded resume delete success: key=%s, requestID=%s", objectKey, requestID)
@@ -145,7 +146,7 @@ func (l *UploadResumeLogic) deleteUploadedResume(objectKey string) {
 // normalizeResumeRPCError 避免把普通 go 错误以含内部细节的 Unknown 状态直接返回给客户端。
 func normalizeResumeRPCError(err error) error {
 	if status.Code(err) == codes.Unknown {
-		return status.Error(codes.Internal,"保存简历失败")
+		return status.Error(codes.Internal, "保存简历失败")
 	}
 	return err
 }
