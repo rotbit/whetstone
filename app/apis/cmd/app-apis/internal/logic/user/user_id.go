@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 )
 
@@ -21,10 +22,17 @@ func userIDFromContext(ctx context.Context) (int64, error) {
 		return 0, ErrNoUserID
 	}
 
-	// 3. JWT 是 JSON，数字 claim 经 jwt.MapClaims 解析回来固定为 float64，
-	//    直接用 v.(int64) 必然断言失败。这里用 type switch 兼容常见数值类型。
+	// 3. go-zero JWT parser 使用 jwt.WithJSONNumber()，数字 claim 在 context 中
+	//    的真实类型是 json.Number（不是 int64 也不是 float64）。
+	//    这里用 type switch 兼容 json.Number 及其他常见数值类型。
 	var id int64
 	switch val := v.(type) {
+	case json.Number:
+		n, err := val.Int64()
+		if err != nil {
+			return 0, ErrNoUserID
+		}
+		id = n
 	case int64:
 		id = val
 	case float64:
