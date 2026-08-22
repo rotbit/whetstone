@@ -373,6 +373,112 @@ func (x *UserInfo) GetCredits() int64 {
 	return 0
 }
 
+// SaveResumeReq 由 app-apis 在 OSS 上传成功后构造，不直接接受公网客户端调用
+type SaveResumeReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	OssUrl        string                 `protobuf:"bytes,2,opt,name=oss_url,json=ossUrl,proto3" json:"oss_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveResumeReq) Reset() {
+	*x = SaveResumeReq{}
+	mi := &file_user_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveResumeReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveResumeReq) ProtoMessage() {}
+
+func (x *SaveResumeReq) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveResumeReq.ProtoReflect.Descriptor instead.
+func (*SaveResumeReq) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *SaveResumeReq) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *SaveResumeReq) GetOssUrl() string {
+	if x != nil {
+		return x.OssUrl
+	}
+	return ""
+}
+
+// 返回新建或幂等命中的同一份简历记录
+type SaveResumeResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ResumeId      int64                  `protobuf:"varint,1,opt,name=resume_id,json=resumeId,proto3" json:"resume_id,omitempty"`      //resume表主键
+	ParseState    string                 `protobuf:"bytes,2,opt,name=parse_state,json=parseState,proto3" json:"parse_state,omitempty"` //parsing\done\failed
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveResumeResp) Reset() {
+	*x = SaveResumeResp{}
+	mi := &file_user_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveResumeResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveResumeResp) ProtoMessage() {}
+
+func (x *SaveResumeResp) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveResumeResp.ProtoReflect.Descriptor instead.
+func (*SaveResumeResp) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *SaveResumeResp) GetResumeId() int64 {
+	if x != nil {
+		return x.ResumeId
+	}
+	return 0
+}
+
+func (x *SaveResumeResp) GetParseState() string {
+	if x != nil {
+		return x.ParseState
+	}
+	return ""
+}
+
 type DeductCreditReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -384,7 +490,7 @@ type DeductCreditReq struct {
 
 func (x *DeductCreditReq) Reset() {
 	*x = DeductCreditReq{}
-	mi := &file_user_proto_msgTypes[6]
+	mi := &file_user_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -396,7 +502,7 @@ func (x *DeductCreditReq) String() string {
 func (*DeductCreditReq) ProtoMessage() {}
 
 func (x *DeductCreditReq) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[6]
+	mi := &file_user_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -409,7 +515,7 @@ func (x *DeductCreditReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeductCreditReq.ProtoReflect.Descriptor instead.
 func (*DeductCreditReq) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{6}
+	return file_user_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *DeductCreditReq) GetUserId() int64 {
@@ -443,7 +549,7 @@ type DeductCreditResp struct {
 
 func (x *DeductCreditResp) Reset() {
 	*x = DeductCreditResp{}
-	mi := &file_user_proto_msgTypes[7]
+	mi := &file_user_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -455,7 +561,7 @@ func (x *DeductCreditResp) String() string {
 func (*DeductCreditResp) ProtoMessage() {}
 
 func (x *DeductCreditResp) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[7]
+	mi := &file_user_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -468,7 +574,7 @@ func (x *DeductCreditResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeductCreditResp.ProtoReflect.Descriptor instead.
 func (*DeductCreditResp) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{7}
+	return file_user_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *DeductCreditResp) GetOk() bool {
@@ -495,7 +601,7 @@ type RefundCreditReq struct {
 
 func (x *RefundCreditReq) Reset() {
 	*x = RefundCreditReq{}
-	mi := &file_user_proto_msgTypes[8]
+	mi := &file_user_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -507,7 +613,7 @@ func (x *RefundCreditReq) String() string {
 func (*RefundCreditReq) ProtoMessage() {}
 
 func (x *RefundCreditReq) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[8]
+	mi := &file_user_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -520,7 +626,7 @@ func (x *RefundCreditReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefundCreditReq.ProtoReflect.Descriptor instead.
 func (*RefundCreditReq) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{8}
+	return file_user_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *RefundCreditReq) GetUserId() int64 {
@@ -546,7 +652,7 @@ type RefundCreditResp struct {
 
 func (x *RefundCreditResp) Reset() {
 	*x = RefundCreditResp{}
-	mi := &file_user_proto_msgTypes[9]
+	mi := &file_user_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -558,7 +664,7 @@ func (x *RefundCreditResp) String() string {
 func (*RefundCreditResp) ProtoMessage() {}
 
 func (x *RefundCreditResp) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[9]
+	mi := &file_user_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -571,7 +677,7 @@ func (x *RefundCreditResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefundCreditResp.ProtoReflect.Descriptor instead.
 func (*RefundCreditResp) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{9}
+	return file_user_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *RefundCreditResp) GetOk() bool {
@@ -610,7 +716,14 @@ const file_user_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x14\n" +
 	"\x05phone\x18\x02 \x01(\tR\x05phone\x12\x12\n" +
 	"\x04plan\x18\x03 \x01(\tR\x04plan\x12\x18\n" +
-	"\acredits\x18\x04 \x01(\x03R\acredits\"a\n" +
+	"\acredits\x18\x04 \x01(\x03R\acredits\"A\n" +
+	"\rSaveResumeReq\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x17\n" +
+	"\aoss_url\x18\x02 \x01(\tR\x06ossUrl\"N\n" +
+	"\x0eSaveResumeResp\x12\x1b\n" +
+	"\tresume_id\x18\x01 \x01(\x03R\bresumeId\x12\x1f\n" +
+	"\vparse_state\x18\x02 \x01(\tR\n" +
+	"parseState\"a\n" +
 	"\x0fDeductCreditReq\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x1d\n" +
 	"\n" +
@@ -624,11 +737,13 @@ const file_user_proto_rawDesc = "" +
 	"\n" +
 	"session_id\x18\x02 \x01(\tR\tsessionId\"\"\n" +
 	"\x10RefundCreditResp\x12\x0e\n" +
-	"\x02ok\x18\x01 \x01(\bR\x02ok2\x8e\x02\n" +
+	"\x02ok\x18\x01 \x01(\bR\x02ok2\xc7\x02\n" +
 	"\x04User\x121\n" +
 	"\bRegister\x12\x11.user.RegisterReq\x1a\x12.user.RegisterResp\x12(\n" +
 	"\x05Login\x12\x0e.user.LoginRep\x1a\x0f.user.LoginResp\x12+\n" +
-	"\aGetUser\x12\x10.user.GetUserReq\x1a\x0e.user.UserInfo\x12=\n" +
+	"\aGetUser\x12\x10.user.GetUserReq\x1a\x0e.user.UserInfo\x127\n" +
+	"\n" +
+	"SaveResume\x12\x13.user.SaveResumeReq\x1a\x14.user.SaveResumeResp\x12=\n" +
 	"\fDeductCredit\x12\x15.user.DeductCreditReq\x1a\x16.user.DeductCreditResp\x12=\n" +
 	"\fRefundCredit\x12\x15.user.RefundCreditReq\x1a\x16.user.RefundCreditRespB\x06Z\x04./pbb\x06proto3"
 
@@ -644,7 +759,7 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_user_proto_goTypes = []any{
 	(*RegisterReq)(nil),      // 0: user.RegisterReq
 	(*RegisterResp)(nil),     // 1: user.RegisterResp
@@ -652,27 +767,31 @@ var file_user_proto_goTypes = []any{
 	(*LoginResp)(nil),        // 3: user.LoginResp
 	(*GetUserReq)(nil),       // 4: user.GetUserReq
 	(*UserInfo)(nil),         // 5: user.UserInfo
-	(*DeductCreditReq)(nil),  // 6: user.DeductCreditReq
-	(*DeductCreditResp)(nil), // 7: user.DeductCreditResp
-	(*RefundCreditReq)(nil),  // 8: user.RefundCreditReq
-	(*RefundCreditResp)(nil), // 9: user.RefundCreditResp
+	(*SaveResumeReq)(nil),    // 6: user.SaveResumeReq
+	(*SaveResumeResp)(nil),   // 7: user.SaveResumeResp
+	(*DeductCreditReq)(nil),  // 8: user.DeductCreditReq
+	(*DeductCreditResp)(nil), // 9: user.DeductCreditResp
+	(*RefundCreditReq)(nil),  // 10: user.RefundCreditReq
+	(*RefundCreditResp)(nil), // 11: user.RefundCreditResp
 }
 var file_user_proto_depIdxs = []int32{
-	0, // 0: user.User.Register:input_type -> user.RegisterReq
-	2, // 1: user.User.Login:input_type -> user.LoginRep
-	4, // 2: user.User.GetUser:input_type -> user.GetUserReq
-	6, // 3: user.User.DeductCredit:input_type -> user.DeductCreditReq
-	8, // 4: user.User.RefundCredit:input_type -> user.RefundCreditReq
-	1, // 5: user.User.Register:output_type -> user.RegisterResp
-	3, // 6: user.User.Login:output_type -> user.LoginResp
-	5, // 7: user.User.GetUser:output_type -> user.UserInfo
-	7, // 8: user.User.DeductCredit:output_type -> user.DeductCreditResp
-	9, // 9: user.User.RefundCredit:output_type -> user.RefundCreditResp
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0,  // 0: user.User.Register:input_type -> user.RegisterReq
+	2,  // 1: user.User.Login:input_type -> user.LoginRep
+	4,  // 2: user.User.GetUser:input_type -> user.GetUserReq
+	6,  // 3: user.User.SaveResume:input_type -> user.SaveResumeReq
+	8,  // 4: user.User.DeductCredit:input_type -> user.DeductCreditReq
+	10, // 5: user.User.RefundCredit:input_type -> user.RefundCreditReq
+	1,  // 6: user.User.Register:output_type -> user.RegisterResp
+	3,  // 7: user.User.Login:output_type -> user.LoginResp
+	5,  // 8: user.User.GetUser:output_type -> user.UserInfo
+	7,  // 9: user.User.SaveResume:output_type -> user.SaveResumeResp
+	9,  // 10: user.User.DeductCredit:output_type -> user.DeductCreditResp
+	11, // 11: user.User.RefundCredit:output_type -> user.RefundCreditResp
+	6,  // [6:12] is the sub-list for method output_type
+	0,  // [0:6] is the sub-list for method input_type
+	0,  // [0:0] is the sub-list for extension type_name
+	0,  // [0:0] is the sub-list for extension extendee
+	0,  // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
@@ -686,7 +805,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_proto_rawDesc), len(file_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -62,6 +62,16 @@ func (f *fakeUserRpc) RefundCredit(
 	panic("unexpected RefundCredit call")
 }
 
+// SaveResume 由 goctl 在 user.User 接口新增；当前 Register 测试不触发该调用，
+// 若未来加测试用例（例如 app-apis 的简历上传 logic 单测）需要在此替换为可控 mock 行为。
+func (f *fakeUserRpc) SaveResume(
+	context.Context,
+	*userclient.SaveResumeReq,
+	...grpc.CallOption,
+) (*userclient.SaveResumeResp, error) {
+	panic("unexpected SaveResume call")
+}
+
 func TestRegisterReturnsSignedToken(t *testing.T) {
 	fakeRpc := &fakeUserRpc{
 		registerResp: &userclient.RegisterResp{UserId: 42, Phone: "13800138000", Plan: "free"},

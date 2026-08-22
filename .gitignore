@@ -26,4 +26,8 @@ vendor/
 *.local.yaml
 .env
 .env.*
-.env
+
+# Temp/scratch SQL files used for local model experimentation
+sql/linshi.sql
+sql/linshi*.sql
+sql/*_tmp.sql
