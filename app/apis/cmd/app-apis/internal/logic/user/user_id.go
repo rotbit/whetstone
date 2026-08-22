@@ -21,12 +21,22 @@ func userIDFromContext(ctx context.Context) (int64, error) {
 		return 0, ErrNoUserID
 	}
 
-	// 3. 类型断言：尝试将值转换为 int64。
-	//    JWT 中间件存入时通常是 int64，但为了安全需做类型检查。
-	id, ok := v.(int64)
+	// 3. JWT 是 JSON，数字 claim 经 jwt.MapClaims 解析回来固定为 float64，
+	//    直接用 v.(int64) 必然断言失败。这里用 type switch 兼容常见数值类型。
+	var id int64
+	switch val := v.(type) {
+	case int64:
+		id = val
+	case float64:
+		id = int64(val)
+	case int:
+		id = int64(val)
+	default:
+		return 0, ErrNoUserID
+	}
 
-	// 4. 如果断言失败（不是 int64）或 ID <= 0（无效值），视为未登录。
-	if !ok || id <= 0 {
+	// 4. ID <= 0 视为无效，视为未登录。
+	if id <= 0 {
 		return 0, ErrNoUserID
 	}
 
