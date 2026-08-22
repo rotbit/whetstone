@@ -25,7 +25,7 @@ QuestionRpc:
 
 Websocket:
   PublicUrl: ws://127.0.0.1:8888/ws
-  
+
 # app-apis 直接上传简历到阿里云 OSS；真实凭证必须通过环境变量注入。
 OSS:
   Region: "${OSS_REGION}"                       # 例如 cn-hangzhou
